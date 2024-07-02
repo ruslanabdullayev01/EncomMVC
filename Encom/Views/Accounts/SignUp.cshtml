@@ -1,0 +1,50 @@
+﻿@using Encom.ViewModels.Account
+@model RegisterVM
+@{
+    Layout = "~/Areas/EncomAdmin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row mt-3">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">@language.Getkey("CreateUser")</div>
+                <hr>
+                <form method="post" enctype="multipart/form-data" autocomplete="off">
+                    <div class="form-group">
+                        <label asp-for="@Model.FullName">@language.Getkey("FullName")</label>
+                        <input asp-for="@Model.FullName" class="form-control">
+                        <span asp-validation-for="@Model.FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Username">@language.Getkey("Username")</label>
+                        <input asp-for="@Model.Username" class="form-control">
+                        <span asp-validation-for="@Model.Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Email">@language.Getkey("Email")</label>
+                        <input asp-for="@Model.Email" class="form-control">
+                        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Password">@language.Getkey("Password")</label>
+                        <input asp-for="@Model.Password" class="form-control">
+                        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.CheckPassword">@language.Getkey("ConfirmPassword")</label>
+                        <input asp-for="@Model.CheckPassword" class="form-control">
+                        <span asp-validation-for="@Model.CheckPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary px-5">@language.Getkey("Submit")</button>
+                        <a asp-area="TelcoAdmin" asp-controller="Users" asp-action="Index" class="btn btn-secondary">@language.Getkey("Cancel")</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

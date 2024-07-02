@@ -1,0 +1,187 @@
+﻿@using Encom.Helpers
+@model PageNatedList<Appeal>
+@inject LanguageService language
+@{
+    ViewData["Title"] = "Index";
+
+    var filter = Context.Request.Query["isReadFilter"];
+    int No = (Model.PageIndex - 1) * 10;
+}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h2 class="card-title">@language.Getkey("Appeals")</h2>
+                </div>
+                <form asp-controller="Appeals" asp-action="Index" method="get">
+                    <div class="form-group">
+                        <label>@language.Getkey("Filter"):</label>
+                        <label>
+                            <input id="readInput" type="radio" name="isReadFilter" value="read">  @language.Getkey("Read")
+                        </label>
+                        <label>
+                            <input id="unreadInput" type="radio" name="isReadFilter" value="unread">  @language.Getkey("Unread")
+                        </label>
+                        <label>
+                            <input id="allInput" type="radio" name="isReadFilter" value="all">  @language.Getkey("All")
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">@language.Getkey("Apply")</button>
+                </form>
+                <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    №
+                                </th>
+                                <th>
+                                    @language.Getkey("FullName")
+                                </th>
+                                <th>
+                                    @language.Getkey("Email")
+                                </th>
+                                <th>
+                                    @language.Getkey("SendAt")
+                                </th>
+                                <th>
+                                    @language.Getkey("Status")
+                                </th>
+                                <th class="text-center">
+                                    @language.Getkey("Actions")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Appeal item in Model)
+                            {
+                                No++;
+                                <tr>
+                                    <td>
+                                        @No
+                                    </td>
+                                    <td>
+                                        @item.Name @item.Surname
+                                    </td>
+                                    <td>
+                                        @item.Email
+                                    </td>
+                                    <td>
+                                        @item.CreatedAt.ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td>
+                                        @if (item.IsRead)
+                                        {
+                                            <span style="background:green;padding:3px;color:white;border-radius:3px">@language.Getkey("Read")</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="background:red;padding:3px;color:white;border-radius:3px">@language.Getkey("Unread")</span>
+                                        }
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: center; ">
+                                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-warning text-white mr-2">@language.Getkey("Details")</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white mr-2 deleteIndex">@language.Getkey("Delete")</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @if (Model.HasPrev)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-area="EncomAdmin" asp-controller="Appeals" asp-action="Index"
+                           asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-isReadFilter="@filter">@language.Getkey("Previous")</a>
+                    </li>
+                }
+                @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")"><a class="page-link" asp-area="EncomAdmin" asp-controller="Appeals" asp-action="Index" asp-route-pageIndex="@i" asp-route-isReadFilter="@filter">@i</a></li>
+                }
+                @if (Model.HasNext)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-area="EncomAdmin" asp-controller="Appeals" asp-action="Index" asp-route-isReadFilter="@filter"
+                           asp-route-pageIndex="@(Model.PageIndex + 1)">@language.Getkey("Next")</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script type="text/javascript">
+    console.log(window.location.href)
+    if (window.location.href.indexOf("=read") > -1) document.querySelector("#readInput").checked = true;
+    else if (window.location.href.indexOf("=unread") > -1) document.querySelector("#unreadInput").checked = true;
+    else if (window.location.href.indexOf("=all") > -1) document.querySelector("#allInput").checked = true;
+    else document.querySelector("#unreadInput").checked = true;
+
+</script>
+
+@section Scripts {
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <style>
+        .swal-title {
+            color: black;
+        }
+
+        .swal-text {
+            color: #555;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '.deleteIndex', function (e) {
+                e.preventDefault();
+                var deleteUrl = $(this).attr('href');
+
+                swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this data!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: deleteUrl,
+                                type: 'DELETE',
+                                success: function (result) {
+                                    swal({
+                                        icon: "success",
+                                        text: "Your data has been deleted!",
+                                        buttons: false,
+                                    })
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000)
+                                },
+                                error: function (error) {
+                                    console.error('Error:', error);
+                                }
+                            });
+                        } else {
+                            swal({
+                                icon: "error",
+                                text: "Delete operation cancelled!",
+                                buttons: false,
+                                timer: 1000
+                            });
+                        }
+                    });
+            });
+        });
+    </script>
+
+}

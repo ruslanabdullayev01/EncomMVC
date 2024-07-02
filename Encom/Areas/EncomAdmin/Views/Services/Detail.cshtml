@@ -1,0 +1,7 @@
+﻿@model Service
+<h1>@language.Getkey("ServiceDetails")</h1>
+<p><strong>@language.Getkey("Icon"):</strong> <img style="width:120px; height:120px; object-fit:cover;" src="~src/assets/images/@Model.IconPath" /></p>
+<p><strong>@language.Getkey("Name"):</strong> @Model.Name</p>
+<p><strong>@language.Getkey("Description"):</strong> @Model.Description</p>
+
+<a asp-action="Index" class="btn btn-secondary">@language.Getkey("GoToBack")</a>

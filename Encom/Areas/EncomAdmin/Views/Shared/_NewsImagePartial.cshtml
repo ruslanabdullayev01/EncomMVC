@@ -1,0 +1,16 @@
+﻿@model List<NewsPhoto>
+
+@foreach (NewsPhoto newsImage in Model)
+{
+    <div>
+        <div>
+            <img src="~/src/assets/images/@newsImage.ImagePath" />
+        </div>
+        @if (Model.Count > 1)
+        {
+            <div>
+                <a asp-area="EncomAdmin" asp-controller="News" asp-action="DeleteImage" asp-route-id="@newsImage.NewsId" asp-route-imageId="@newsImage.Id" class="btn btn-danger deleteImage">Delete</a>
+            </div>
+        }
+    </div>
+}
