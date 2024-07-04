@@ -1,0 +1,19 @@
+﻿@model Project
+<h1>@language.Getkey("ProjectDetails")</h1>
+<p>
+    <strong>@language.Getkey("Images"):</strong>
+    <div>
+        @if (Model.ProjectPhotos != null && Model.ProjectPhotos.Count > 0)
+        {
+            @foreach (var item in Model.ProjectPhotos)
+            {
+                <img style="width:200px; height:200px; object-fit:contain;" src="~/@item.ImagePath" />
+            }
+        }
+    </div>
+</p>
+<p><strong>@language.Getkey("Title"):</strong> @Model.Title</p>
+<p><strong>@language.Getkey("Description"):</strong> @Html.Raw(Model.Description)</p>
+<p><strong>@language.Getkey("CreatedAt"):</strong> @Model.CreatedAt</p>
+
+<a asp-action="Index" class="btn btn-secondary">@language.Getkey("GoToBack")</a>

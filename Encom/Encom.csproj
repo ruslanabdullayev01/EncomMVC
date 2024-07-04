@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Home\" />
+    <Folder Include="wwwroot\src\assets\images\" />
   </ItemGroup>
 
   <ItemGroup>

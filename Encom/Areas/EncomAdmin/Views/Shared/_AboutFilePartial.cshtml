@@ -1,0 +1,23 @@
+﻿@model List<AboutFile>
+
+@foreach (var aboutFile in Model)
+{
+    <div class="image-wrapper" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px">
+        <div>
+            @if (aboutFile.FilePath.EndsWith(".mp4") || aboutFile.FilePath.EndsWith(".avi"))
+            {
+                <video controls style="width:200px; height:200px"><source src="~/@aboutFile.FilePath" /></video>
+            }
+            else
+            {
+                <img src="~/@aboutFile.FilePath" width="200px" height="200px" />
+            }
+        </div>
+        @if (Model.Count > 1)
+        {
+            <div style="margin-top:10px;">
+                <button class="btn btn-danger deleteImage deleteIndex" data-aboutid="@aboutFile.AboutId" data-filepath="@aboutFile.FilePath">@language.Getkey("Delete")</button>
+            </div>
+        }
+    </div>
+}

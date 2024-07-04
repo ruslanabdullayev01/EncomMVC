@@ -15,46 +15,46 @@
 
                 </div>
                 <div class="table-responsive pt-3">
-                        <table class="table table-bordered">
-                            <thead>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    №
+                                </th>
+                                <th>
+                                    @language.Getkey("Image")
+                                </th>
+                                <th>
+                                    @language.Getkey("Title")
+                                </th>
+                                <th>
+                                    @language.Getkey("Actions")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (News news in Model)
+                            {
+                                No++;
                                 <tr>
-                                    <th>
-                                        №
-                                    </th>
-                                    <th>
-                                        @language.Getkey("Image")
-                                    </th>
-                                    <th>
-                                        @language.Getkey("Title")
-                                    </th>
-                                    <th>
-                                        @language.Getkey("Actions")
-                                    </th>
+                                    <td>
+                                        @No
+                                    </td>
+                                    <td>
+                                        <img style="height:90px; border-radius:0px; object-fit:cover" src="~/src/assets/images/ ">
+                                    </td>
+                                    <td>
+                                        @news.Title
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: center; ">
+                                        <a asp-action="Detail" asp-route-id="@news.Id" class="btn btn-warning text-white mr-2">@language.Getkey("Details")</a>
+                                        <a asp-action="Update" asp-route-id="@news.Id" class="btn btn-info text-white mr-2">@language.Getkey("Update")</a>
+                                        <a asp-action="Delete" asp-route-id="@news.Id" class="btn btn-danger text-white mr-2 deleteIndex">@language.Getkey("Delete")</a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (News news in Model)
-                                {
-                                    No++;
-                                    <tr>
-                                        <td>
-                                            @No
-                                        </td>
-                                        <td>
-                                            <img style="height:90px; border-radius:0px; object-fit:cover" src="~/src/assets/images/">
-                                        </td>
-                                        <td>
-                                            @news.Title
-                                        </td>
-                                        <td style="vertical-align: middle; text-align: center; ">
-                                            <a asp-action="Detail" asp-route-id="@news.Id" class="btn btn-warning text-white mr-2">@language.Getkey("Details")</a>
-                                            <a asp-action="Update" asp-route-id="@news.Id" class="btn btn-info text-white mr-2">@language.Getkey("Update")</a>
-                                            <a asp-action="Delete" asp-route-id="@news.Id" class="btn btn-danger text-white mr-2 deleteIndex">@language.Getkey("Delete")</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

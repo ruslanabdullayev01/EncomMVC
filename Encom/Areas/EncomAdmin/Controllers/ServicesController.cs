@@ -67,7 +67,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     return View(models);
                 }
 
-                models[0].IconPath = await models[0].Photo.CreateFileAsync(_env, "src", "images");
+                models[0].IconPath = await models[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
             }
             else
             {
@@ -148,9 +148,9 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 string previousFilePath = dbServices[0].IconPath;
                 if (previousFilePath != null)
                 {
-                    FileHelper.DeleteFile(previousFilePath, _env, "src", "images");
+                    FileHelper.DeleteFile(previousFilePath, _env, "src", "assets", "images");
                 }
-                string imagePath = await services[0].Photo.CreateFileAsync(_env, "src", "images");
+                string imagePath = await services[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
                 foreach (Service service in dbServices)
                 {
                     service.IconPath = imagePath;
@@ -195,7 +195,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
             foreach (Service service in services)
             {
                 if (service == null) return NotFound();
-                FileHelper.DeleteFile(service.IconPath, _env, "src", "images");
+                FileHelper.DeleteFile(service.IconPath, _env, "src", "assets", "images");
                 service.IsDeleted = true;
                 service.DeletedBy = currentUsername;
                 service.DeletedAt = DateTime.UtcNow.AddHours(4);

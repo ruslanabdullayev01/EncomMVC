@@ -29,11 +29,11 @@ namespace Encom.Controllers
 
         #region Login
 
-        [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return RedirectToAction("Login");
-        }
+        //[HttpGet]
+        //public IActionResult AccessDenied()
+        //{
+        //    return RedirectToAction("Login");
+        //}
 
         public IActionResult Login()
         {
@@ -76,7 +76,7 @@ namespace Encom.Controllers
                 return View(loginVM);
             }
 
-            return RedirectToAction("Index", "Dashboard", new { area = "EncomAdmin" });
+            return RedirectToAction("Index", "Appeals", new { area = "EncomAdmin" });
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace Encom.Controllers
         {
             await _signInManager.SignOutAsync();
 
-            return RedirectToAction("Index", "Dashboard", new { area = "EncomAdmin" });
+            return RedirectToAction(actionName:nameof(Login), "Accounts");
         }
         #endregion
     }

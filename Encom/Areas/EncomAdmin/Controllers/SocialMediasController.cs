@@ -93,18 +93,14 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             string? currentUsername = _userManager.GetUserName(HttpContext.User);
 
-            SocialMedia newSocialMedia = new()
-            {
-                Facebook = socialMedia.Facebook,
-                Twitter = socialMedia.Twitter,
-                Linkedin = socialMedia.Linkedin,
-                Telegram = socialMedia.Telegram,
-                UpdatedAt = DateTime.UtcNow.AddHours(4),
-                UpdatedBy = currentUsername
-            };
+            dbSocialMedia.Facebook = socialMedia.Facebook;
+            dbSocialMedia.Twitter = socialMedia.Twitter;
+            dbSocialMedia.Linkedin = socialMedia.Linkedin;
+            dbSocialMedia.Telegram = socialMedia.Telegram;
+            dbSocialMedia.UpdatedAt = DateTime.UtcNow.AddHours(4);
+            dbSocialMedia.UpdatedBy = currentUsername;
 
             await _db.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
         #endregion

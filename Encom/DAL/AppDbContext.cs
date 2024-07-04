@@ -16,9 +16,10 @@ namespace Encom.DAL
         public DbSet<Service> Services { get; set; }
         public DbSet<SocialMedia> SocialMedias { get; set; }
         public DbSet<Appeal> Appeals { get; set; }
+        public DbSet<About> Abouts { get; set; }
+        public DbSet<AboutFile> AboutFiles { get; set; }
         public DbSet<User> User { get; set; }
         //UNDONE: Branches changes
-        //UNDONE: About modeli qalib
         //public DbSet<Branch> Branches { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Setting> Settings { get; set; }

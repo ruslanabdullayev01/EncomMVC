@@ -36,5 +36,47 @@
 
             return fileName;
         }
+
+        public static async Task<string> CreateDynamicFileAsync(this IFormFile file, IWebHostEnvironment env, params string[] folders)
+        {
+            string fullPath = Path.Combine(env.WebRootPath);
+            foreach (string folder in folders)
+            {
+                fullPath = Path.Combine(fullPath, folder);
+            }
+
+            string hashString;
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                file.OpenReadStream().Position = 0;
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+
+                    memoryStream.Position = 0;
+                    byte[] hashBytes = sha256.ComputeHash(memoryStream);
+
+                    hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                }
+            }
+
+            string extension = Path.GetExtension(file.FileName);
+
+            string fileName = $"{hashString}{extension}";
+
+            string fullFilePath = Path.Combine(fullPath, fileName);
+
+            if (!File.Exists(fullFilePath))
+            {
+                file.OpenReadStream().Position = 0;
+                using (var stream = new FileStream(fullFilePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+
+            return Path.Combine(folders).Replace("\\", "/") + "/" + fileName;
+        }
     }
 }

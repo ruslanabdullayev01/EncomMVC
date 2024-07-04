@@ -1,0 +1,16 @@
+﻿@model List<ProjectPhoto>
+
+@foreach (var projectImage in Model)
+{
+    <div class="image-wrapper" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px">
+        <div>
+            <img src="~/@projectImage.ImagePath" width="200px" height="200px" />
+        </div>
+        @if (Model.Count > 1)
+        {
+            <div style="margin-top:10px;">
+                <button class="btn btn-danger deleteImage deleteIndex" data-projectid="@projectImage.ProjectId" data-imagepath="@projectImage.ImagePath">@language.Getkey("Delete")</button>
+            </div>
+        }
+    </div>
+}

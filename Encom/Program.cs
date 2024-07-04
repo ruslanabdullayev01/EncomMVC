@@ -82,6 +82,12 @@ builder.Services.AddIdentity<User, IdentityRole>(opt =>
     opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._";
     opt.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Accounts/Login";
+    options.LogoutPath = "/Accounts/Logout";
+});
 #endregion
 
 #endregion
@@ -125,8 +131,9 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
       name: "Admin",
-      pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+      pattern: "{area:exists}/{controller=Appeals}/{action=Index}/{id?}"
     );
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

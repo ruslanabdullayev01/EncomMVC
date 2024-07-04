@@ -2,10 +2,13 @@
 {
     public class Branch : BaseEntity
     {
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string MapIFrame { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+
+        //UNDONE: Branch deyislecek
+
+        public int? LanguageId { get; set; }
+        public Language? Language { get; set; }
+        public int LanguageGroup { get; set; }
     }
 }

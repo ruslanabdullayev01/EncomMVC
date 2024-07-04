@@ -29,10 +29,11 @@ namespace Encom.Areas.EncomAdmin.Controllers
         #region Index
         public IActionResult Index(int pageIndex = 1)
         {
-            IQueryable<News> query = _db.News.AsNoTracking().Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
+            IQueryable<News> query = _db.News
+                .AsNoTracking()
+                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
             return View(PageNatedList<News>.Create(query, pageIndex, 10, 10));
         }
-
         #endregion
 
         #region Create
@@ -48,54 +49,52 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View(models);
-            }
+            if (!ModelState.IsValid) return View(models);
 
             #region Image
-            if (models[0].Files != null && models[0].Files.Count() > 0)
+            foreach (var item in models)
             {
-                List<NewsPhoto> newsImages = new List<NewsPhoto>();
-                foreach (IFormFile file in models[0].Files)
+                List<NewsPhoto> newsImages = new();
+                if (models[0].Files != null && models[0].Files.Count() > 0)
                 {
-                    if (!(file.CheckFileContenttype("image/jpeg") || file.CheckFileContenttype("image/png")))
+                    foreach (IFormFile file in models[0].Files)
                     {
-                        ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
-                        return View(models);
+                        if (!(file.CheckFileContenttype("image/jpeg") || file.CheckFileContenttype("image/png")))
+                        {
+                            ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
+                            return View(models);
+                        }
+
+                        if (file.CheckFileLength(5120))
+                        {
+                            ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
+                            return View(models);
+                        }
+
+                        NewsPhoto newsImage = new()
+                        {
+                            ImagePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images"),
+                            IsMain = newsImages.Count == 0,
+                            News = item
+                        };
+
+                        newsImages.Add(newsImage);
                     }
-
-                    if (file.CheckFileLength(5120))
-                    {
-                        ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                        return View(models);
-                    }
-
-                    NewsPhoto newsImage = new()
-                    {
-                        ImagePath = await file.CreateFileAsync(_env, "src", "images")
-                    };
-
-                    newsImages.Add(newsImage);
                 }
-                models[0].NewsPhotos = newsImages;
-            }
-            else
-            {
-                ModelState.AddModelError("[0].Photo", "Image is empty");
-                return View(models);
-            }
-            #endregion
-
-            News? temp = await _db.News.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
-            string currentUsername = _userManager.GetUserName(HttpContext.User);
-            foreach (News item in models)
-            {
+                else
+                {
+                    ModelState.AddModelError("[0].Photo", "Image is empty");
+                    return View(models);
+                }
+                News? temp = await _db.News.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+                string? currentUsername = _userManager.GetUserName(HttpContext.User);
+                item.NewsPhotos = newsImages;
                 item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
                 item.CreatedAt = DateTime.UtcNow.AddHours(4);
                 item.CreatedBy = currentUsername;
                 await _db.News.AddAsync(item);
             }
+            #endregion
 
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -105,18 +104,19 @@ namespace Encom.Areas.EncomAdmin.Controllers
         #region Update
         public async Task<IActionResult> Update(int? id)
         {
-
             if (id == null) return BadRequest();
 
-            List<Language> languages = await _db.Languages.ToListAsync();
-            ViewBag.Languages = languages;
+            ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            News? firstNews = await _db.News.FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
+            News? firstNews = await _db.News
+                .FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
 
             if (firstNews == null) return NotFound();
 
             List<News> news = await _db.News
-                .Where(c => c.LanguageGroup == firstNews.LanguageGroup && c.IsDeleted == false).ToListAsync();
+                .Where(c => c.LanguageGroup == firstNews.LanguageGroup && c.IsDeleted == false)
+                .Include(x => x.NewsPhotos)
+                .ToListAsync();
 
             return View(news);
         }
@@ -131,60 +131,73 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             if (id == null) return BadRequest();
 
-            News? firstNews = await _db.News.FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
+            News? firstNews = await _db.News
+                .Include(x => x.NewsPhotos)
+                .FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
+
             if (firstNews == null) return NotFound();
 
-            List<News> dbNewss = await _db.News.Where(c => c.LanguageGroup == firstNews.LanguageGroup && c.IsDeleted == false).ToListAsync();
+            List<News> dbNewsList = await _db.News
+                .Where(c => c.LanguageGroup == firstNews.LanguageGroup && c.IsDeleted == false)
+                .Include(x => x.NewsPhotos)
+                .ToListAsync();
 
-            if (dbNewss == null || dbNewss.Count == 0) return NotFound();
+            if (dbNewsList == null || dbNewsList.Count == 0) return NotFound();
 
-            if (!ModelState.IsValid)
+            List<NewsPhoto> newPhotos = new();
+
+            foreach (var item in news)
             {
-                return View(news);
-            }
-
-            #region Image
-            if (news[0].Files != null && news[0].Files.Count() > 0)
-            {
-                List<NewsPhoto> newsImages = new List<NewsPhoto>();
-                foreach (IFormFile file in news[0].Files)
+                var dbNews = dbNewsList.FirstOrDefault(s => s.LanguageId == item.LanguageId);
+                if (dbNews != null)
                 {
-                    if (!(file.CheckFileContenttype("image/jpeg") || file.CheckFileContenttype("image/png")))
+                    string? currentUsername = _userManager.GetUserName(HttpContext.User);
+                    dbNews.Title = item.Title.Trim();
+                    dbNews.Description = item.Description.Trim();
+                    dbNews.UpdatedAt = DateTime.UtcNow.AddHours(4);
+                    dbNews.UpdatedBy = currentUsername;
+
+                    if (item.Files != null && item.Files.Count() > 0)
                     {
-                        ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
-                        return View(news);
+                        foreach (IFormFile file in item.Files)
+                        {
+                            if (file.CheckFileContenttype("image/jpeg") || file.CheckFileContenttype("image/png"))
+                            {
+                                if (!file.CheckFileLength(5120))
+                                {
+                                    NewsPhoto newsImage = new()
+                                    {
+                                        ImagePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images")
+                                    };
+
+                                    newPhotos.Add(newsImage);
+                                }
+                                else
+                                {
+                                    ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
+                                    return View(news);
+                                }
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
+                                return View(news);
+                            }
+                        }
                     }
-
-                    if (file.CheckFileLength(5120))
-                    {
-                        ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                        return View(news);
-                    }
-
-                    NewsPhoto newsImage = new()
-                    {
-                        ImagePath = await file.CreateFileAsync(_env, "src", "images")
-                    };
-
-                    newsImages.Add(newsImage);
                 }
-                dbNewss[0].NewsPhotos.AddRange(newsImages);
             }
-            else
-            {
-                ModelState.AddModelError("[0].Photo", "Image is empty");
-                return View(news);
-            }
-            #endregion
 
-            string? currentUsername = _userManager.GetUserName(HttpContext.User);
-            foreach (News item in news)
+            foreach (var dbNews in dbNewsList)
             {
-                News? dbNews = dbNewss.FirstOrDefault(s => s.LanguageId == item.LanguageId);
-                dbNews.Title = item.Title.Trim();
-                dbNews.Description = item.Description.Trim();
-                dbNews.UpdatedAt = DateTime.UtcNow.AddHours(4);
-                dbNews.UpdatedBy = currentUsername;
+                foreach (var photo in newPhotos)
+                {
+                    dbNews.NewsPhotos.Add(new NewsPhoto
+                    {
+                        ImagePath = photo.ImagePath,
+                        News = dbNews
+                    });
+                }
             }
 
             await _db.SaveChangesAsync();
@@ -192,40 +205,33 @@ namespace Encom.Areas.EncomAdmin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DeleteImage(int? id, int? imageId)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteImage(int? id, string? imagePath)
         {
-            if (id == null) return BadRequest();
+            if (id == null || string.IsNullOrEmpty(imagePath)) return BadRequest();
 
-            if (imageId == null) return BadRequest();
-
-            News? news = await _db
-                .News
+            News? news = await _db.News
                 .Include(p => p.NewsPhotos)
-                .FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && p.IsDeleted == false);
 
             if (news == null) return NotFound();
 
-            if (!news.NewsPhotos.Any(pi => pi.Id == imageId)) return BadRequest();
+            List<NewsPhoto> photosToDelete = await _db.NewsPhotos
+                .Include(x => x.News)
+                .Where(x => x.ImagePath == imagePath && x.News.LanguageGroup == news.LanguageGroup)
+                .ToListAsync();
 
-            if (news.NewsPhotos.Count <= 1)
+            if (photosToDelete != null && photosToDelete.Count > 0)
             {
-                return BadRequest();
+                foreach (var photoToDelete in photosToDelete)
+                {
+                    FileHelper.DeleteFile(photoToDelete.ImagePath, _env, "src", "assets", "images");
+                    _db.NewsPhotos.Remove(photoToDelete);
+                }
             }
-
-            List<News> allNews = await _db.News.Where(x => x.LanguageGroup == news.LanguageGroup).ToListAsync();
-            foreach (News item in allNews)
-            {
-                FileHelper.DeleteFile((item.NewsPhotos.FirstOrDefault(x => x.Id == imageId).ImagePath), _env, "assets", "images");
-                _db.NewsPhotos.Remove(item.NewsPhotos.FirstOrDefault(x => x.Id == imageId));
-            }
-
-            //product.ProductImages.FirstOrDefault(p => p.Id == imageId).IsDeleted = true;
-            //product.ProductImages.FirstOrDefault(p => p.Id == imageId).DeletedBy = "System";
-            //product.ProductImages.FirstOrDefault(p => p.Id == imageId).DeletedAt = DateTime.UtcNow.AddHours(4);
 
             await _db.SaveChangesAsync();
-            return PartialView("_ProductImagePartial", news.NewsPhotos.ToList());
+            return Ok(new { success = true, message = "Photos deleted successfully." });
         }
         #endregion
 
@@ -237,11 +243,15 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 return NotFound();
             }
 
-            News? temp = await _db.News.AsNoTracking().Include(a => a.Language).FirstOrDefaultAsync(s => s.IsDeleted == false && s.Id == id);
+            News? temp = await _db.News
+                .AsNoTracking()
+                .Include(a => a.Language)
+                .FirstOrDefaultAsync(s => s.IsDeleted == false && s.Id == id);
             if (temp == null) return NotFound();
 
             News? news = await _db.News.AsNoTracking()
                 .Include(x => x.Language)
+                .Include(x => x.NewsPhotos)
                 .FirstOrDefaultAsync(x => x.LanguageGroup == temp.LanguageGroup && x.Language!.Culture == CultureInfo.CurrentCulture.Name); ;
             if (news == null) return BadRequest();
             return View(news);
@@ -271,7 +281,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
             {
                 foreach (NewsPhoto photo in newsImages)
                 {
-                    FileHelper.DeleteFile(photo.ImagePath, _env, "src", "images");
+                    FileHelper.DeleteFile(photo.ImagePath, _env, "src", "assets", "images");
                     _db.NewsPhotos.RemoveRange(newsImages);
                 }
             }

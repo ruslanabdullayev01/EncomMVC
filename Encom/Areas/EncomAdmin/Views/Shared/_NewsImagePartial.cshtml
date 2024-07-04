@@ -1,15 +1,15 @@
 ﻿@model List<NewsPhoto>
 
-@foreach (NewsPhoto newsImage in Model)
+@foreach (var newsImage in Model)
 {
-    <div>
+    <div class="image-wrapper" style="display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px">
         <div>
-            <img src="~/src/assets/images/@newsImage.ImagePath" />
+            <img src="~/@newsImage.ImagePath" width="200px" height="200px" />
         </div>
         @if (Model.Count > 1)
         {
-            <div>
-                <a asp-area="EncomAdmin" asp-controller="News" asp-action="DeleteImage" asp-route-id="@newsImage.NewsId" asp-route-imageId="@newsImage.Id" class="btn btn-danger deleteImage">Delete</a>
+            <div style="margin-top:10px;">
+                <button class="btn btn-danger deleteImage deleteIndex" data-newsid="@newsImage.NewsId" data-imagepath="@newsImage.ImagePath">@language.Getkey("Delete")</button>
             </div>
         }
     </div>

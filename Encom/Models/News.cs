@@ -6,10 +6,11 @@ namespace Encom.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
+
         //UNDONE: Date ???
 
         [NotMapped]
-        public IEnumerable<IFormFile>? Files { get; set; }
+        public List<IFormFile>? Files { get; set; }
         public List<NewsPhoto>? NewsPhotos { get; set; }
 
         public int? LanguageId { get; set; }

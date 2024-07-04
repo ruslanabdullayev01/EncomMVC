@@ -67,7 +67,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     return View(models);
                 }
 
-                models[0].ImagePath = await models[0].Photo.CreateFileAsync(_env, "src", "images");
+                models[0].ImagePath = await models[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
             }
             else
             {
@@ -148,9 +148,9 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 string previousFilePath = dbLicenses[0].ImagePath;
                 if (previousFilePath != null)
                 {
-                    FileHelper.DeleteFile(previousFilePath, _env, "src", "images");
+                    FileHelper.DeleteFile(previousFilePath, _env, "src", "assets", "images");
                 }
-                string imagePath = await licenses[0].Photo.CreateFileAsync(_env, "src", "images");
+                string imagePath = await licenses[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
                 foreach (License license in dbLicenses)
                 {
                     license.ImagePath = imagePath;
@@ -218,7 +218,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
             foreach (License license in licenses)
             {
                 if (license == null) return NotFound();
-                FileHelper.DeleteFile(license.ImagePath, _env, "src", "images");
+                FileHelper.DeleteFile(license.ImagePath, _env, "src", "assets", "images");
                 license.IsDeleted = true;
                 license.DeletedBy = currentUsername;
                 license.DeletedAt = DateTime.UtcNow.AddHours(4);

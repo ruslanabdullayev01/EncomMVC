@@ -7,6 +7,8 @@ namespace Encom.Models
         public string Title { get; set; }
         public string Description { get; set; }
 
+        [NotMapped]
+        public List<IFormFile>? Files { get; set; }
         public List<ProjectPhoto>? ProjectPhotos { get; set; }
 
         public int? LanguageId { get; set; }

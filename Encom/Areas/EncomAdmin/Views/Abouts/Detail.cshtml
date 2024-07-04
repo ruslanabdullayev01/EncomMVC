@@ -1,0 +1,30 @@
+﻿@model About
+<h1>@language.Getkey("AboutDetails")</h1>
+<p>
+    <strong>@language.Getkey("Files"):</strong>
+    <div>
+        @if (Model.AboutFiles != null && Model.AboutFiles.Count > 0)
+        {
+            @foreach (var item in Model.AboutFiles)
+            {
+                if (item.FilePath.EndsWith(".mp4") || item.FilePath.EndsWith(".avi"))
+                {
+                    <div>
+                        <video controls style="width:200px; height:200px;"><source src="~/@item.FilePath" /></video>
+                    </div>
+                }
+                else
+                {
+
+                    <img style="width:200px; height:200px; object-fit:contain;" src="~/@item.FilePath" />
+
+                }
+            }
+        }
+    </div>
+</p>
+<p><strong>@language.Getkey("Title"):</strong> @Model.Title</p>
+<p><strong>@language.Getkey("Description"):</strong> @Html.Raw(Model.Description)</p>
+<p><strong>@language.Getkey("CreatedAt"):</strong> @Model.CreatedAt</p>
+
+<a asp-action="Index" class="btn btn-secondary">@language.Getkey("GoToBack")</a>

@@ -1,0 +1,84 @@
+﻿@using Encom.Helpers
+@model PageNatedList<About>
+@{
+    ViewData["Title"] = "Index";
+    int count = (Model.PageIndex - 1) * 3;
+    int No = (Model.PageIndex - 1) * 10;
+    int dataCount = ViewBag.DataCount;
+}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h2 class="card-title">@language.Getkey("AboutUs")</h2>
+                    @if (dataCount == 0)
+                    {
+                        <a asp-area="EncomAdmin" asp-controller="Abouts" asp-action="Create" class="btn btn-primary text-white mr-2">@language.Getkey("Create")</a>
+                    }
+
+                </div>
+                <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    №
+                                </th>
+                                <th>
+                                    @language.Getkey("Title")
+                                </th>
+                                <th>
+                                    @language.Getkey("Actions")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (About about in Model)
+                            {
+                                No++;
+                                <tr>
+                                    <td>
+                                        @No
+                                    </td>
+                                    <td>
+                                        @about.Title
+                                    </td>
+                                    <td style="vertical-align: middle; text-align: center; ">
+                                        <a asp-action="Detail" asp-route-id="@about.Id" class="btn btn-warning text-white mr-2">@language.Getkey("Details")</a>
+                                        <a asp-action="Update" asp-route-id="@about.Id" class="btn btn-info text-white mr-2">@language.Getkey("Update")</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @if (Model.HasPrev)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-area="EncomAdmin" asp-controller="Abouts" asp-action="Index"
+                           asp-route-pageIndex="@(Model.PageIndex - 1)">@language.Getkey("Previous")</a>
+                    </li>
+                }
+                @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")"><a class="page-link" asp-area="EncomAdmin" asp-controller="Abouts" asp-action="Index" asp-route-pageIndex="@i">@i</a></li>
+                }
+                @if (Model.HasNext)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-area="EncomAdmin" asp-controller="Abouts" asp-action="Index"
+                           asp-route-pageIndex="@(Model.PageIndex + 1)">@language.Getkey("Next")</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

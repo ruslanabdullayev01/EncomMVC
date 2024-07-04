@@ -58,7 +58,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     return View(model);
                 }
 
-                model.ImagePath = await model.Photo.CreateFileAsync(_env, "src", "images"); // UNDONE: Source deyise biler
+                model.ImagePath = await model.Photo.CreateFileAsync(_env, "src", "assets", "images"); // UNDONE: Source deyise biler
                 model.CreatedAt = DateTime.UtcNow.AddHours(4);
                 model.CreatedBy = currentUsername;
             }
@@ -114,10 +114,10 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 string previousFilePath = dbCertificate.ImagePath;
                 if (previousFilePath != null)
                 {
-                    FileHelper.DeleteFile(previousFilePath, _env, "src", "images");
+                    FileHelper.DeleteFile(previousFilePath, _env, "src", "assets", "images");
                 }
 
-                dbCertificate.ImagePath = await certificate.Photo.CreateFileAsync(_env, "src", "images");
+                dbCertificate.ImagePath = await certificate.Photo.CreateFileAsync(_env, "src", "assets", "images");
             }
             #endregion
             string currentUsername = _userManager.GetUserName(HttpContext.User);
@@ -143,7 +143,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             if (certificate.ImagePath != null)
             {
-                FileHelper.DeleteFile(certificate.ImagePath, _env, "src", "images");
+                FileHelper.DeleteFile(certificate.ImagePath, _env, "src", "assets", "images");
             }
 
             //string currentUsername = _userManager.GetUserName(HttpContext.User);

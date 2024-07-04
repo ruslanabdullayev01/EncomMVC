@@ -10,7 +10,7 @@
                 <hr>
                 <form method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label asp-for="@Model[0].Files">@language.Getkey("Images")</label>
+                        <label>@language.Getkey("Images")</label>
                         <input accept="image/*" asp-for="@Model[0].Files" class="form-control">
                         <span asp-validation-for="@Model[0].Files" class="text-danger"></span>
                     </div>
