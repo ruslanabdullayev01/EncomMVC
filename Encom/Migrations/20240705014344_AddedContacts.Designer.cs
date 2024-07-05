@@ -4,6 +4,7 @@ using Encom.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Encom.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240705014344_AddedContacts")]
+    partial class AddedContacts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,12 +226,6 @@ namespace Encom.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LanguageGroup")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LanguageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("MapIFrame")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -244,8 +241,6 @@ namespace Encom.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LanguageId");
 
                     b.ToTable("Contacts");
                 });
@@ -816,15 +811,6 @@ namespace Encom.Migrations
                         .IsRequired();
 
                     b.Navigation("About");
-                });
-
-            modelBuilder.Entity("Encom.Models.Contact", b =>
-                {
-                    b.HasOne("Encom.Models.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId");
-
-                    b.Navigation("Language");
                 });
 
             modelBuilder.Entity("Encom.Models.License", b =>

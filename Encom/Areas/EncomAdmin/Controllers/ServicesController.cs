@@ -30,8 +30,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
         public IActionResult Index(int pageIndex = 1)
         {
             IQueryable<Service> query = _db.Services.AsNoTracking()
-                .Where(x => !x.IsDeleted && x.Language.Culture == CultureInfo.CurrentCulture.Name);
-            ViewBag.DataCount = query.Count();
+                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
             return View(PageNatedList<Service>.Create(query, pageIndex, 10, 10));
         }
         #endregion

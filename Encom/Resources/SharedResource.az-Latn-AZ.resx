@@ -153,20 +153,35 @@
   <data name="BioDetails" xml:space="preserve">
     <value>Bio təfərrüatları</value>
   </data>
+  <data name="Branches" xml:space="preserve">
+    <value>Filiallar</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Ləğv etmək</value>
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Sertifikatlar</value>
   </data>
+  <data name="CertificatesAndLicenses" xml:space="preserve">
+    <value>Sertifikatlar və Lisenziyalar</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Şifrəni təsdiqləyin</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Əlaqə</value>
+  </data>
+  <data name="ContactDetails" xml:space="preserve">
+    <value>Əlaqələrin təfərrüatları</value>
   </data>
   <data name="ContactInfo" xml:space="preserve">
     <value>Əlaqə məlumatları</value>
   </data>
+  <data name="ContactNumber" xml:space="preserve">
+    <value>Əlaqə nömrəsi</value>
+  </data>
   <data name="ContactUs" xml:space="preserve">
-    <value>Bizimlə Əlaqə</value>
+    <value>Bizimlə Əlaqəyə Keçin</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Əlavə etmək</value>
@@ -179,6 +194,9 @@
   </data>
   <data name="CreateCertificate" xml:space="preserve">
     <value>Sertifikat əlavə etmək</value>
+  </data>
+  <data name="CreateContacts" xml:space="preserve">
+    <value>Əlaqələri əlavə etmək</value>
   </data>
   <data name="CreatedAt" xml:space="preserve">
     <value>Yaradılıb</value>
@@ -217,7 +235,7 @@
     <value>Təfərrüatlar</value>
   </data>
   <data name="Email" xml:space="preserve">
-    <value>E-poçt</value>
+    <value>E-poçt ünvanı</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
     <value>Şifrəni daxil edin</value>
@@ -262,7 +280,10 @@
     <value>Açar söz</value>
   </data>
   <data name="LatestNews" xml:space="preserve">
-    <value>SON XƏBƏRLƏR</value>
+    <value>Son Xəbərlər</value>
+  </data>
+  <data name="LatestNewsAndUpdates" xml:space="preserve">
+    <value>Son Xəbərlər və Yenilikər</value>
   </data>
   <data name="Licenses" xml:space="preserve">
     <value>Lisenziyalar</value>
@@ -281,6 +302,9 @@
   </data>
   <data name="Map" xml:space="preserve">
     <value>Xəritə</value>
+  </data>
+  <data name="MapLink" xml:space="preserve">
+    <value>Xəritə Linki</value>
   </data>
   <data name="Message" xml:space="preserve">
     <value>Mesaj</value>
@@ -334,7 +358,7 @@
     <value>Oxunub</value>
   </data>
   <data name="ReadMore" xml:space="preserve">
-    <value>Daha Çox</value>
+    <value>Daha çox oxu</value>
   </data>
   <data name="Replied" xml:space="preserve">
     <value>Cavablandırılıb</value>
@@ -348,11 +372,17 @@
   <data name="SaveChanges" xml:space="preserve">
     <value>Dəyişiklikləri yadda saxla</value>
   </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Hamısına bax</value>
+  </data>
   <data name="Send" xml:space="preserve">
     <value>Göndər</value>
   </data>
   <data name="SendAt" xml:space="preserve">
     <value>Göndərilib</value>
+  </data>
+  <data name="SendNow" xml:space="preserve">
+    <value>İndi göndər</value>
   </data>
   <data name="SendReply" xml:space="preserve">
     <value>Cavabı göndər</value>
@@ -387,6 +417,12 @@
   <data name="SubTitle" xml:space="preserve">
     <value>Altbaşlıq</value>
   </data>
+  <data name="Surname" xml:space="preserve">
+    <value>Soyad</value>
+  </data>
+  <data name="TargetAndMission" xml:space="preserve">
+    <value>Hədəf və missiya</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>Başlıq</value>
   </data>
@@ -404,6 +440,9 @@
   </data>
   <data name="UpdateCertificate" xml:space="preserve">
     <value>Sertifikatı yeniləmək</value>
+  </data>
+  <data name="UpdateContacts" xml:space="preserve">
+    <value>Əlaqələri yeniləmək</value>
   </data>
   <data name="UpdateLicense" xml:space="preserve">
     <value>Lisenziyanı yeniləmək</value>

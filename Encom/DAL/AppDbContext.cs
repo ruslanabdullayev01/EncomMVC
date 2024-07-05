@@ -18,6 +18,7 @@ namespace Encom.DAL
         public DbSet<Appeal> Appeals { get; set; }
         public DbSet<About> Abouts { get; set; }
         public DbSet<AboutFile> AboutFiles { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<User> User { get; set; }
         //UNDONE: Branches changes
         //public DbSet<Branch> Branches { get; set; }

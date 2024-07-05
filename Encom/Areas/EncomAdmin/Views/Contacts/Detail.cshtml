@@ -1,0 +1,8 @@
+﻿@model Contact
+<h1>@language.Getkey("ContactDetails")</h1>
+<p><strong>@language.Getkey("Address"):</strong> @Model.Address</p>
+<p><strong>@language.Getkey("Email"):</strong> @Model.Email</p>
+<p><strong>@language.Getkey("PhoneNumber"):</strong> @Model.Number</p>
+@Html.Raw(Model.MapIFrame)
+<br />
+<a asp-action="Index" class="btn btn-secondary">@language.Getkey("GoToBack")</a>

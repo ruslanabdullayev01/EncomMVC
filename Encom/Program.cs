@@ -58,7 +58,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     var supportedCultures = new List<CultureInfo>
                 {
                     new CultureInfo("az-Latn-AZ"),
-                    new CultureInfo("en-US"),//UNDONE: Add languages
+                    new CultureInfo("en-US"),
+                    new CultureInfo("ru-RU"),
+                    new CultureInfo("tr-TR"),
                 };
     options.DefaultRequestCulture = new RequestCulture(culture: "az-Latn-AZ", uiCulture: "az-Latn-AZ");
     options.SupportedCultures = supportedCultures;
