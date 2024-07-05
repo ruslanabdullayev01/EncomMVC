@@ -20,7 +20,7 @@ namespace Encom.DAL
         public DbSet<AboutFile> AboutFiles { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<User> User { get; set; }
-        //UNDONE: Branches changes
+        //UNDONE: Branche track
         //public DbSet<Branch> Branches { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Setting> Settings { get; set; }

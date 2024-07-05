@@ -13,7 +13,7 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label asp-for="@Model[0].Key">@language.Getkey("Key")</label>
-                        <input asp-for="@Model[0].Key" class="form-control">
+                        <input asp-for="@Model[0].Key" class="form-control" readonly>
                         <span asp-validation-for="@Model[0].Key" class="text text-danger"></span>
                     </div>
                     @if (languages != null && languages.Count() > 0)
@@ -47,5 +47,4 @@
             return false;
         };
     </script>
-}
 }

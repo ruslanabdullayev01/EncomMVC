@@ -117,11 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutDetails" xml:space="preserve">
+    <value>Детали о нас</value>
+  </data>
   <data name="AboutUs" xml:space="preserve">
     <value>О нас</value>
   </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Адрес</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="AppealDetails" xml:space="preserve">
+    <value>Детали заявки</value>
+  </data>
+  <data name="Appeals" xml:space="preserve">
+    <value>Заявки</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
   <data name="Branches" xml:space="preserve">
     <value>Филиалы</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Сертификаты</value>
@@ -132,20 +156,89 @@
   <data name="Contact" xml:space="preserve">
     <value>Контакт</value>
   </data>
+  <data name="ContactDetails" xml:space="preserve">
+    <value>Детали контактов</value>
+  </data>
   <data name="ContactNumber" xml:space="preserve">
     <value>Контактный номер</value>
   </data>
   <data name="ContactUs" xml:space="preserve">
     <value>Свяжись С Нами</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="CreateAboutUs" xml:space="preserve">
+    <value>Создать о нас</value>
+  </data>
+  <data name="CreateCertificate" xml:space="preserve">
+    <value>Создать сертификат</value>
+  </data>
+  <data name="CreateContacts" xml:space="preserve">
+    <value>Создать контакт</value>
+  </data>
+  <data name="CreatedAt" xml:space="preserve">
+    <value>Создано</value>
+  </data>
+  <data name="CreateLicense" xml:space="preserve">
+    <value>Создать лицензию</value>
+  </data>
+  <data name="CreateNews" xml:space="preserve">
+    <value>Создать новость</value>
+  </data>
+  <data name="CreateProject" xml:space="preserve">
+    <value>Создать проект</value>
+  </data>
+  <data name="CreateService" xml:space="preserve">
+    <value>Создать услугу</value>
+  </data>
+  <data name="CreateSocialMedias" xml:space="preserve">
+    <value>Создать соц. сети</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Детали</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Адрес эл. почты</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>Файлы</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Фильтр</value>
   </data>
   <data name="FollowUs" xml:space="preserve">
     <value>Подписывайтесь на на</value>
   </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Полное имя</value>
+  </data>
+  <data name="GoToBack" xml:space="preserve">
+    <value>Перейти назад</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Главная страница</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>Иконка</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Изображение</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Изображения</value>
+  </data>
+  <data name="ImagesAndVideo" xml:space="preserve">
+    <value>Изображения и Видео</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Ключ</value>
   </data>
   <data name="LatestNews" xml:space="preserve">
     <value>Последние Новости</value>
@@ -156,14 +249,47 @@
   <data name="Licenses" xml:space="preserve">
     <value>Лицензии</value>
   </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="MAINNAVIGATION" xml:space="preserve">
+    <value>ГЛАВНАЯ НАВИГАЦИЯ</value>
+  </data>
+  <data name="MapLink" xml:space="preserve">
+    <value>Ссылка карты</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Имя</value>
   </data>
   <data name="News" xml:space="preserve">
     <value>Новости</value>
   </data>
+  <data name="NewsDetails" xml:space="preserve">
+    <value>Детали новости</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Номер телефона</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Предыдущая</value>
+  </data>
+  <data name="ProjectDetails" xml:space="preserve">
+    <value>Детали проекта</value>
+  </data>
   <data name="Projects" xml:space="preserve">
     <value>Проекты</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Прочитано</value>
+  </data>
+  <data name="ReadedBy" xml:space="preserve">
+    <value>Прочитано</value>
   </data>
   <data name="ReadMore" xml:space="preserve">
     <value>Читать далее</value>
@@ -171,17 +297,83 @@
   <data name="SeeAll" xml:space="preserve">
     <value>Увидеть все</value>
   </data>
+  <data name="SendAt" xml:space="preserve">
+    <value>Отправлено</value>
+  </data>
   <data name="SendNow" xml:space="preserve">
     <value>Отправить сейчас</value>
   </data>
+  <data name="ServiceDetails" xml:space="preserve">
+    <value>Детали услуги</value>
+  </data>
   <data name="Services" xml:space="preserve">
     <value>Услуги</value>
+  </data>
+  <data name="SettingDetails" xml:space="preserve">
+    <value>Детали параметров</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="SocialMedias" xml:space="preserve">
+    <value>Соц. сети</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Подтвердить</value>
   </data>
   <data name="Surname" xml:space="preserve">
     <value>Фамилия</value>
   </data>
   <data name="TargetAndMission" xml:space="preserve">
     <value>Цель и миссия</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Заголовок</value>
+  </data>
+  <data name="Unread" xml:space="preserve">
+    <value>Не прочитано</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="UpdateAboutUs" xml:space="preserve">
+    <value>Обновить о нас</value>
+  </data>
+  <data name="UpdateCertificate" xml:space="preserve">
+    <value>Обновить сертификат</value>
+  </data>
+  <data name="UpdateContacts" xml:space="preserve">
+    <value>Обновить контакты</value>
+  </data>
+  <data name="UpdateLicense" xml:space="preserve">
+    <value>Обновить лицензию</value>
+  </data>
+  <data name="UpdateNews" xml:space="preserve">
+    <value>Обновить новость</value>
+  </data>
+  <data name="UpdateProject" xml:space="preserve">
+    <value>Обновить проект</value>
+  </data>
+  <data name="UpdateService" xml:space="preserve">
+    <value>Обновить услугу</value>
+  </data>
+  <data name="UpdateSetting" xml:space="preserve">
+    <value>Обновить параметр</value>
+  </data>
+  <data name="UpdateSocialMedias" xml:space="preserve">
+    <value>Обновить соц. сети</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Пользователи</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Значение</value>
   </data>
   <data name="YourMessage" xml:space="preserve">
     <value>Ваше сообщение</value>

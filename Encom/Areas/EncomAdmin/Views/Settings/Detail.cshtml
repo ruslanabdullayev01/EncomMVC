@@ -1,10 +1,10 @@
 ﻿@model Setting
 <h1>@language.Getkey("SettingDetails")</h1>
 
-<p><strong>@language.Getkey("Key"):</strong></p>
+<p><strong>@language.Getkey("Key"):</strong>@(" " + Model.Key)</p>
 
 
-<div style="display:flex;"><strong>@language.Getkey("Value"): </strong> @Html.Raw(Model.Value)</div>
+<div style="display:flex;"><strong>@language.Getkey("Value"):</strong>@(" " + Model.Value)</div>
 
 <a class="btn btn-secondary" id="btnBack" style="cursor:pointer;">@language.Getkey("GoToBack")</a>
 

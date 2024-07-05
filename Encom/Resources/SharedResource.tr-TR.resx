@@ -117,11 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutDetails" xml:space="preserve">
+    <value>Hakkında Detayları</value>
+  </data>
   <data name="AboutUs" xml:space="preserve">
     <value>Hakkımızda</value>
   </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Hareketler</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adres</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tüm</value>
+  </data>
+  <data name="AppealDetails" xml:space="preserve">
+    <value>Başvuru Detayları</value>
+  </data>
+  <data name="Appeals" xml:space="preserve">
+    <value>Başvurular</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
   <data name="Branches" xml:space="preserve">
     <value>Şubeler</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal etmek</value>
   </data>
   <data name="Certificates" xml:space="preserve">
     <value>Sertifikalar</value>
@@ -132,20 +156,89 @@
   <data name="Contact" xml:space="preserve">
     <value>İletişim</value>
   </data>
+  <data name="ContactDetails" xml:space="preserve">
+    <value>İletişim Detayları</value>
+  </data>
   <data name="ContactNumber" xml:space="preserve">
     <value>İletişim numarası</value>
   </data>
   <data name="ContactUs" xml:space="preserve">
     <value>Bizimle Temasa Geçin</value>
   </data>
+  <data name="Create" xml:space="preserve">
+    <value>Yaratmak</value>
+  </data>
+  <data name="CreateAboutUs" xml:space="preserve">
+    <value>Hakkımızda Oluştur</value>
+  </data>
+  <data name="CreateCertificate" xml:space="preserve">
+    <value>Sertifika Oluştur</value>
+  </data>
+  <data name="CreateContacts" xml:space="preserve">
+    <value>İletişim Oluştur</value>
+  </data>
+  <data name="CreatedAt" xml:space="preserve">
+    <value>Oluşturulma Tarihi</value>
+  </data>
+  <data name="CreateLicense" xml:space="preserve">
+    <value>Lisans Oluştur</value>
+  </data>
+  <data name="CreateNews" xml:space="preserve">
+    <value>Haber Oluştur</value>
+  </data>
+  <data name="CreateProject" xml:space="preserve">
+    <value>Proje Oluştur</value>
+  </data>
+  <data name="CreateService" xml:space="preserve">
+    <value>Hizmet Oluştur</value>
+  </data>
+  <data name="CreateSocialMedias" xml:space="preserve">
+    <value>Sosyal Medyalar Oluştur</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Silmek</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Açıklama</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detaylar</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>E-posta adresi</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>Dosyalar</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filtre</value>
   </data>
   <data name="FollowUs" xml:space="preserve">
     <value>Bizi Takip Edin</value>
   </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Ad Soyad</value>
+  </data>
+  <data name="GoToBack" xml:space="preserve">
+    <value>Geriye Git</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Ana sayfa</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>İkon</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Resim</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Resimler</value>
+  </data>
+  <data name="ImagesAndVideo" xml:space="preserve">
+    <value>Resimler ve Video</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Anahtar</value>
   </data>
   <data name="LatestNews" xml:space="preserve">
     <value>Son Haberler</value>
@@ -156,14 +249,47 @@
   <data name="Licenses" xml:space="preserve">
     <value>Lisanslar</value>
   </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Çıkış Yap</value>
+  </data>
+  <data name="MAINNAVIGATION" xml:space="preserve">
+    <value>ANA YÖNLENDİRİCİ</value>
+  </data>
+  <data name="MapLink" xml:space="preserve">
+    <value>Harita Bağlantısı</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>Mesaj</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>İsim</value>
   </data>
   <data name="News" xml:space="preserve">
     <value>Haberler</value>
   </data>
+  <data name="NewsDetails" xml:space="preserve">
+    <value>Haber Detayları</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Sonraki</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Telefon numarası</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Öncesi</value>
+  </data>
+  <data name="ProjectDetails" xml:space="preserve">
+    <value>Proje Detayları</value>
+  </data>
   <data name="Projects" xml:space="preserve">
     <value>Projeler</value>
+  </data>
+  <data name="Read" xml:space="preserve">
+    <value>Okunmuş</value>
+  </data>
+  <data name="ReadedBy" xml:space="preserve">
+    <value>Okuyan</value>
   </data>
   <data name="ReadMore" xml:space="preserve">
     <value>Devamını oku</value>
@@ -171,17 +297,83 @@
   <data name="SeeAll" xml:space="preserve">
     <value>Hepsini gör</value>
   </data>
+  <data name="SendAt" xml:space="preserve">
+    <value>Gönderilmiş</value>
+  </data>
   <data name="SendNow" xml:space="preserve">
     <value>Şimdi gönder</value>
   </data>
+  <data name="ServiceDetails" xml:space="preserve">
+    <value>Hizmet Detayları</value>
+  </data>
   <data name="Services" xml:space="preserve">
     <value>Hizmetler</value>
+  </data>
+  <data name="SettingDetails" xml:space="preserve">
+    <value>Ayar Detayları</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="SocialMedias" xml:space="preserve">
+    <value>Sosyal Medyalar</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Durum</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Göndermek</value>
   </data>
   <data name="Surname" xml:space="preserve">
     <value>Soyadı</value>
   </data>
   <data name="TargetAndMission" xml:space="preserve">
     <value>Hedef ve misyon</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Başlık</value>
+  </data>
+  <data name="Unread" xml:space="preserve">
+    <value>Okunmamış</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Güncelleme</value>
+  </data>
+  <data name="UpdateAboutUs" xml:space="preserve">
+    <value>Hakkımızda Güncelleme</value>
+  </data>
+  <data name="UpdateCertificate" xml:space="preserve">
+    <value>Sertifika Güncelleme</value>
+  </data>
+  <data name="UpdateContacts" xml:space="preserve">
+    <value>İletişim Güncelleme</value>
+  </data>
+  <data name="UpdateLicense" xml:space="preserve">
+    <value>Lisans Güncelleme</value>
+  </data>
+  <data name="UpdateNews" xml:space="preserve">
+    <value>Haber Güncelle</value>
+  </data>
+  <data name="UpdateProject" xml:space="preserve">
+    <value>Proje Güncelleme</value>
+  </data>
+  <data name="UpdateService" xml:space="preserve">
+    <value>Hizmet Güncelleme</value>
+  </data>
+  <data name="UpdateSetting" xml:space="preserve">
+    <value>Ayar Güncelleme</value>
+  </data>
+  <data name="UpdateSocialMedias" xml:space="preserve">
+    <value>Sosyal Medyalar Güncelleme</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Kullanıcı adı</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Kullanıcılar</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Değer</value>
   </data>
   <data name="YourMessage" xml:space="preserve">
     <value>Mesajınız</value>

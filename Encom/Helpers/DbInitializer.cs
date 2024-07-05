@@ -10,6 +10,7 @@ namespace Encom.Helpers
     {
         public async static Task SeedAsync(RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AppDbContext db)
         {
+            #region User
             foreach (var item in Enum.GetValues(typeof(UserRoles)))
             {
                 if (!await roleManager.RoleExistsAsync(item.ToString()!))
@@ -42,36 +43,138 @@ namespace Encom.Helpers
 
                 await userManager.AddToRoleAsync(user, UserRoles.SuperAdmin.ToString());
             }
+            #endregion
 
-            //string azLanguageName = "AZ";
-            //Language? azLanguage = db.Languages.FirstOrDefault(l => l.Name == azLanguageName);
+            #region Languages
+            string azLanguageName = "AZ";
+            Language? azLanguage = db.Languages.FirstOrDefault(l => l.Name == azLanguageName);
 
-            //if (azLanguage == null)
-            //{
-            //    azLanguage = new Language
-            //    {
-            //        Name = azLanguageName,
-            //        Culture = "az-Latn-AZ",
-            //    };
+            if (azLanguage == null)
+            {
+                azLanguage = new Language
+                {
+                    Name = azLanguageName,
+                    Culture = "az-Latn-AZ",
+                };
 
-            //    db.Languages.Add(azLanguage);
-            //    await db.SaveChangesAsync();
-            //}
+                db.Languages.Add(azLanguage);
+                await db.SaveChangesAsync();
+            }
 
-            //string enLanguageName = "EN";
-            //Language? enLanguage = db.Languages.FirstOrDefault(l => l.Name == enLanguageName);
+            string enLanguageName = "EN";
+            Language? enLanguage = db.Languages.FirstOrDefault(l => l.Name == enLanguageName);
 
-            //if (enLanguage == null)
-            //{
-            //    enLanguage = new Language
-            //    {
-            //        Name = enLanguageName,
-            //        Culture = "en-US",
-            //    };
+            if (enLanguage == null)
+            {
+                enLanguage = new Language
+                {
+                    Name = enLanguageName,
+                    Culture = "en-US",
+                };
 
-            //    db.Languages.Add(enLanguage);
-            //    await db.SaveChangesAsync();
-            //}
+                db.Languages.Add(enLanguage);
+                await db.SaveChangesAsync();
+            }
+
+            string ruLanguageName = "RU";
+            Language? ruLanguage = db.Languages.FirstOrDefault(l => l.Name == ruLanguageName);
+
+            if (ruLanguage == null)
+            {
+                ruLanguage = new Language
+                {
+                    Name = ruLanguageName,
+                    Culture = "ru-RU",
+                };
+
+                db.Languages.Add(ruLanguage);
+                await db.SaveChangesAsync();
+            }
+
+            string trLanguageName = "TR";
+            Language? trLanguage = db.Languages.FirstOrDefault(l => l.Name == trLanguageName);
+
+            if (trLanguage == null)
+            {
+                trLanguage = new Language
+                {
+                    Name = trLanguageName,
+                    Culture = "tr-TR",
+                };
+
+                db.Languages.Add(trLanguage);
+                await db.SaveChangesAsync();
+            }
+            #endregion
+
+            #region Settings
+            string homeHeroDescriptionKey = "Home Page Hero Description";
+            string homeHeroDescriptionValue = "Hər bir layihədə üstün keyfiyyətlə işləyərək yaşayış yerlərinizə dəyər qatırıq. Peşəkar komandamız və yenilikçi yanaşmamızla sizə təhlükəsiz və estetik strukturlar təqdim etməyi öhdəliyik.";
+            Setting? homeHeroDescription = db.Settings.FirstOrDefault(l => l.Key == homeHeroDescriptionKey);
+
+            if (homeHeroDescription is null)
+            {
+                for (int languageId = 1; languageId <= 4; languageId++)
+                {
+                    homeHeroDescription = new Setting
+                    {
+                        Key = homeHeroDescriptionKey,
+                        Value = homeHeroDescriptionValue,
+                        LanguageId = languageId,
+                        LanguageGroup = 1,
+                    };
+
+                    db.Settings.Add(homeHeroDescription);
+                }
+            }
+            await db.SaveChangesAsync();
+
+
+            string newsHeroDescriptionKey = "News Page Hero Description";
+            string newsHeroDescriptionValue = "İnşaat sektoru daim inkişaf edir və dəyişir. Burada şirkətimizlə bağlı ən son xəbərləri, layihələrimizi və sektorda baş verən yenilikləri tapa bilərsiniz.";
+            Setting? newsHeroDescription = db.Settings.FirstOrDefault(l => l.Key == newsHeroDescriptionKey);
+
+            if (newsHeroDescription is null)
+            {
+                for (int languageId = 1; languageId <= 4; languageId++)
+                {
+                    newsHeroDescription = new Setting
+                    {
+                        Key = newsHeroDescriptionKey,
+                        Value = newsHeroDescriptionValue,
+                        LanguageId = languageId,
+                        LanguageGroup = 2,
+                    };
+
+                    db.Settings.Add(newsHeroDescription);
+                }
+            }
+            await db.SaveChangesAsync();
+
+
+            string formInContactUsPageKey = "Form In Contact Us Page";
+            string formInContactUsValue = "Ətraflı məlumat və ehtiyaclarınızı necə qarşılaya biləcəyimiz üçün aşağıdakı formanı doldurun və komandamızdan kimsə əlaqə saxlasın.";
+            Setting? formInContactUs = db.Settings.FirstOrDefault(l => l.Key == formInContactUsPageKey);
+
+            if (formInContactUs is null)
+            {
+                for (int languageId = 1; languageId <= 4; languageId++)
+                {
+                    formInContactUs = new Setting
+                    {
+                        Key = formInContactUsPageKey,
+                        Value = formInContactUsValue,
+                        LanguageId = languageId,
+                        LanguageGroup = 3,
+                    };
+
+                    db.Settings.Add(formInContactUs);
+                }
+            }
+            await db.SaveChangesAsync();
+
+
+            #endregion
 
         }
     }

@@ -7,16 +7,19 @@
         {
             @foreach (var item in Model.AboutFiles)
             {
-                if (item.FilePath.EndsWith(".mp4") || item.FilePath.EndsWith(".avi"))
+                if (item.FilePath != null)
                 {
-                    <div>
-                        <video controls style="width:200px; height:200px;"><source src="~/@item.FilePath" /></video>
-                    </div>
-                }
-                else
-                {
+                    if (item.FilePath.EndsWith(".mp4") || item.FilePath.EndsWith(".avi"))
+                    {
+                        <div>
+                            <video controls style="width:200px; height:200px;"><source src="~/@item.FilePath" /></video>
+                        </div>
+                    }
+                    else
+                    {
 
-                    <img style="width:200px; height:200px; object-fit:contain;" src="~/@item.FilePath" />
+                        <img style="width:200px; height:200px; object-fit:contain;" src="~/@item.FilePath" />
+                    }
 
                 }
             }

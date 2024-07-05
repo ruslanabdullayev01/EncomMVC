@@ -1,7 +1,7 @@
 ﻿@model Appeal
 @inject LanguageService language
 <h1>@language.Getkey("AppealDetails")</h1>
-<p><strong>@language.Getkey("FullName"):</strong> @Model.Name @Model.Surname</p>
+<p><strong>@language.Getkey("FullName"):</strong> @(Model.Name + " " + Model.Surname)</p>
 <p><strong>@language.Getkey("Email"):</strong> @Model.Email</p>
 <p><strong>@language.Getkey("PhoneNumber"):</strong> @Model.Phone</p>
 <p><strong>@language.Getkey("Message"):</strong> @Model.Message</p>
