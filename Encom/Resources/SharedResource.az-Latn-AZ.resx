@@ -306,6 +306,9 @@
   <data name="MapLink" xml:space="preserve">
     <value>Xəritə Linki</value>
   </data>
+  <data name="MediaSequence" xml:space="preserve">
+    <value>Media ardıcıllığı</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>Mesaj</value>
   </data>
@@ -320,6 +323,9 @@
   </data>
   <data name="Next" xml:space="preserve">
     <value>İrəli</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Ardıcıllıq</value>
   </data>
   <data name="OurMission" xml:space="preserve">
     <value>Bizim Missiyamız</value>

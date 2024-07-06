@@ -8,7 +8,7 @@ namespace Encom.Models
         [NotMapped]
         public IFormFile? Photo { get; set; }
         public string? ImagePath { get; set; }
-        public bool IsMain { get; set; }
+        public int OrderNumber { get; set; }
 
         public Project? Project { get; set; }
         public int ProjectId { get; set; }

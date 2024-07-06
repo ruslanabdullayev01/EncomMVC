@@ -4,8 +4,8 @@ namespace Encom.Models
 {
     public class Project : BaseEntity
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
 
         [NotMapped]
         public List<IFormFile>? Files { get; set; }

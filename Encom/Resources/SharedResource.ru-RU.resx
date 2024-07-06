@@ -258,6 +258,9 @@
   <data name="MapLink" xml:space="preserve">
     <value>Ссылка карты</value>
   </data>
+  <data name="MediaSequence" xml:space="preserve">
+    <value>Последовательность медиа</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>Сообщение</value>
   </data>
@@ -272,6 +275,9 @@
   </data>
   <data name="Next" xml:space="preserve">
     <value>Далее</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Последовательность</value>
   </data>
   <data name="PhoneNumber" xml:space="preserve">
     <value>Номер телефона</value>

@@ -1,0 +1,135 @@
+﻿@* @model List<ProjectPhoto>
+
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Order Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <img src="~/@Model[i].ImagePath" alt="Project Photo" style="max-width: 100px; max-height: 100px;" />
+                    </td>
+                    <td>
+                        <input type="hidden" asp-for="@Model[i].Id" />
+                        <input type="hidden" asp-for="@Model[i].ProjectId" />
+                    </td>
+                    <td>
+                        <input type="number" asp-for="@Model[i].OrderNumber" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+ *@
+
+
+
+@*
+                    @model List<ProjectPhoto>
+
+<form method="post">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Photo</th>
+                <th scope="col">Order Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <img src="~/@Model[i].ImagePath" alt="Project Photo" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                    </td>
+                    <td>
+                        <input type="hidden" asp-for="@Model[i].Id" />
+                        <input type="hidden" asp-for="@Model[i].ProjectId" />
+                        <input type="number" asp-for="@Model[i].OrderNumber" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form> *@
+
+
+
+
+@model List<ProjectPhoto>
+
+<style>
+    .drag-handle {
+        cursor: grabbing;
+    }
+</style>
+
+<form id="photoForm" method="post">
+    <table id="photoTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@language.Getkey("Images")</th>
+                <th scope="col">@language.Getkey("Order")</th>
+            </tr>
+        </thead>
+        <tbody id="photoList">
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr class="photo-item" data-id="@Model[i].Id">
+                    <td class="drag-handle">
+                        <img src="~/@Model[i].ImagePath" alt="Project Photo" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                    </td>
+                    <td>
+                        <input type="hidden" name="photos[@i].Id" value="@Model[i].Id" />
+                        <input type="number" name="photos[@i].OrderNumber" value="@Model[i].OrderNumber" class="form-control" readonly />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">@language.Getkey("Submit")</button>
+        <a asp-action="Index" class="btn btn-secondary">@language.Getkey("Cancel")</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js" integrity="sha512-TelkP3PCMJv+viMWynjKcvLsQzx6dJHvIGhfqzFtZKgAjKM1YPqcwzzDEoTc/BHjf43PcPzTQOjuTr4YdE8lNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // Enable drag-and-drop functionality using Sortable.js
+        new Sortable(document.getElementById('photoList'), {
+            handle: '.drag-handle', // Restrict drag to the handle area
+            animation: 150, // Animation speed (ms)
+            onEnd: function (evt) {
+                // Update the OrderNumber inputs based on new order after drag-and-drop
+                updateOrderNumbers();
+            }
+        });
+
+        // Function to update order numbers after drag-and-drop
+        function updateOrderNumbers() {
+            var rows = document.querySelectorAll('.photo-item');
+            rows.forEach((row, index) => {
+                var input = row.querySelector('input[name*="OrderNumber"]');
+                if (input) {
+                    input.value = index + 1; // Update order number (assuming 1-based index)
+                }
+            });
+        }
+
+        // Submit form on save button click
+        document.getElementById('photoForm').addEventListener('submit', function () {
+            updateOrderNumbers(); // Update one last time before submitting
+        });
+    </script>
+}
+
