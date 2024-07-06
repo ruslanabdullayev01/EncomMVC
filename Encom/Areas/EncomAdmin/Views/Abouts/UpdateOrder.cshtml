@@ -1,4 +1,4 @@
-﻿@model List<ProjectPhoto>
+﻿@model List<AboutFile>
 
 <h2>@language.Getkey("MediaSequence")</h2>
 
@@ -19,7 +19,7 @@
     <table id="photoTable" class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">@language.Getkey("Images")</th>
+                <th scope="col">@language.Getkey("Files")</th>
             </tr>
         </thead>
         <tbody id="photoList">
@@ -27,10 +27,21 @@
             {
                 <tr class="photo-item" data-id="@Model[i].Id">
                     <td class="drag-handle">
-                        <img src="~/@Model[i].ImagePath" alt="Project Photo" class="img-thumbnail" />
-                        <input type="hidden" name="photos[@i].Id" value="@Model[i].Id" />
-                        <input type="hidden" name="photos[@i].ImagePath" value="@Model[i].ImagePath" />
-                        <input type="hidden" name="photos[@i].OrderNumber" value="@Model[i].OrderNumber" />
+                        @if (Model[i].FilePath.EndsWith(".mp4") || Model[i].FilePath.EndsWith(".avi"))
+                        {
+                            <video class="img-thumbnail" controls style="width:200px; height:200px;"><source src="~/@Model[i].FilePath" /></video>
+                            <input type="hidden" name="files[@i].Id" value="@Model[i].Id" />
+                            <input type="hidden" name="files[@i].FilePath" value="@Model[i].FilePath" />
+                            <input type="hidden" name="files[@i].OrderNumber" value="@Model[i].OrderNumber" />
+                        }
+                        else
+                        {
+                            <img class="img-thumbnail" src="~/@Model[i].FilePath" />
+                            <input type="hidden" name="files[@i].Id" value="@Model[i].Id" />
+                            <input type="hidden" name="files[@i].FilePath" value="@Model[i].FilePath" />
+                            <input type="hidden" name="files[@i].OrderNumber" value="@Model[i].OrderNumber" />
+                        }
+                        @* <img src="~/@Model[i].ImagePath" alt="Project Photo" class="img-thumbnail" /> *@
                     </td>
                 </tr>
             }

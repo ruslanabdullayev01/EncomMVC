@@ -37,7 +37,7 @@
             return fileName;
         }
 
-        public static async Task<string> CreateDynamicFileAsync(this IFormFile file, IWebHostEnvironment env, params string[] folders)
+        public static async Task<string> CreateDynamicFileAsync(this IFormFile file, int LanguageGroup, IWebHostEnvironment env, params string[] folders)
         {
             string fullPath = Path.Combine(env.WebRootPath);
             foreach (string folder in folders)
@@ -63,7 +63,7 @@
 
             string extension = Path.GetExtension(file.FileName);
 
-            string fileName = $"{hashString}{extension}";
+            string fileName = $"{hashString}{LanguageGroup}{extension}";
 
             string fullFilePath = Path.Combine(fullPath, fileName);
 

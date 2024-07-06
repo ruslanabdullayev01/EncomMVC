@@ -29,9 +29,11 @@ namespace Encom.Areas.EncomAdmin.Controllers
         #region Index
         public IActionResult Index(int pageIndex = 1)
         {
-            IQueryable<News> query = _db.News
+            var query = _db.News
                 .AsNoTracking()
-                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
+                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name)
+                .OrderByDescending(x => x.CreatedAt)
+                .Include(x => x.NewsPhotos);
             return View(PageNatedList<News>.Create(query, pageIndex, 10, 10));
         }
         #endregion
@@ -49,16 +51,29 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid) return View(models);
+            if (!ModelState.IsValid)
+            {
+                return View(models);
+            }
 
             #region Image
             foreach (var item in models)
             {
                 List<NewsPhoto> newsImages = new();
+
+                News? temp = await _db.News.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+                string currentUsername = _userManager.GetUserName(HttpContext.User);
+                item.NewsPhotos = newsImages;
+                item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
+                item.CreatedAt = DateTime.UtcNow.AddHours(4);
+                item.CreatedBy = currentUsername;
+
                 if (models[0].Files != null && models[0].Files.Count() > 0)
                 {
+                    int orderNumber = 0;
                     foreach (IFormFile file in models[0].Files)
                     {
+                        orderNumber++;
                         if (!(file.CheckFileContenttype("image/jpeg") || file.CheckFileContenttype("image/png")))
                         {
                             ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
@@ -73,8 +88,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
                         NewsPhoto newsImage = new()
                         {
-                            ImagePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images"),
-                            IsMain = newsImages.Count == 0,
+                            ImagePath = await file.CreateDynamicFileAsync(item.LanguageGroup, _env, "src", "assets", "images"),
+                            OrderNumber = orderNumber,
                             News = item
                         };
 
@@ -86,12 +101,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     ModelState.AddModelError("[0].Photo", "Image is empty");
                     return View(models);
                 }
-                News? temp = await _db.News.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
-                string? currentUsername = _userManager.GetUserName(HttpContext.User);
-                item.NewsPhotos = newsImages;
-                item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
-                item.CreatedAt = DateTime.UtcNow.AddHours(4);
-                item.CreatedBy = currentUsername;
+
                 await _db.News.AddAsync(item);
             }
             #endregion
@@ -167,7 +177,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 {
                                     NewsPhoto newsImage = new()
                                     {
-                                        ImagePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images")
+                                        ImagePath = await file.CreateDynamicFileAsync(dbNews.LanguageGroup, _env, "src", "assets", "images"),
+                                        OrderNumber = dbNews.NewsPhotos.Count + 1
                                     };
 
                                     newPhotos.Add(newsImage);
@@ -195,6 +206,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     dbNews.NewsPhotos.Add(new NewsPhoto
                     {
                         ImagePath = photo.ImagePath,
+                        OrderNumber = dbNews.NewsPhotos.Count + 1,
                         News = dbNews
                     });
                 }
@@ -204,6 +216,58 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        #region Order Number
+        public async Task<IActionResult> UpdateOrder(int? id)
+        {
+            if (id == null) return BadRequest();
+
+            ViewBag.Languages = await _db.Languages.ToListAsync();
+
+            News? temp = await _db.News
+                .Include(p => p.NewsPhotos)
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+
+            if (temp == null) return NotFound();
+
+            List<NewsPhoto> currentPhotos = await _db.NewsPhotos
+                .Where(x => x.NewsId == temp.Id)
+                .OrderBy(x => x.OrderNumber)
+                .ToListAsync();
+
+            return View(currentPhotos);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder(List<NewsPhoto> photos)
+        {
+            if (photos == null || photos.Count == 0) return BadRequest();
+
+            var firstPhoto = photos.FirstOrDefault();
+            if (firstPhoto == null || string.IsNullOrEmpty(firstPhoto.ImagePath)) return NotFound();
+
+            var dbPhotos = await _db.NewsPhotos
+                .Include(p => p.News)
+                .Where(p => photos.Select(photo => photo.ImagePath).Contains(p.ImagePath))
+                .ToListAsync();
+
+            foreach (var photo in photos)
+            {
+                var matchedPhotos = dbPhotos
+                    .Where(p => p.ImagePath == photo.ImagePath)
+                    .ToList();
+
+                foreach (var matchedPhoto in matchedPhotos)
+                {
+                    matchedPhoto.OrderNumber = photo.OrderNumber;
+                    _db.Entry(matchedPhoto).Property(x => x.OrderNumber).IsModified = true;
+                }
+            }
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
 
         [HttpDelete]
         public async Task<IActionResult> DeleteImage(int? id, string? imagePath)
@@ -251,7 +315,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             News? news = await _db.News.AsNoTracking()
                 .Include(x => x.Language)
-                .Include(x => x.NewsPhotos)
+                .Include(x => x.NewsPhotos.OrderBy(x => x.OrderNumber))
                 .FirstOrDefaultAsync(x => x.LanguageGroup == temp.LanguageGroup && x.Language!.Culture == CultureInfo.CurrentCulture.Name); ;
             if (news == null) return BadRequest();
             return View(news);

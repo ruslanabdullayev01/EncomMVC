@@ -261,6 +261,9 @@
   <data name="MediaSequence" xml:space="preserve">
     <value>Последовательность медиа</value>
   </data>
+  <data name="MediaSequenceInstruction" xml:space="preserve">
+    <value>Чтобы изменить порядок фотографий, перетащите их в нужное место. Порядок фотографий будет обновлен автоматически. Нажмите «Submit», чтобы сохранить изменения.</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>Сообщение</value>
   </data>

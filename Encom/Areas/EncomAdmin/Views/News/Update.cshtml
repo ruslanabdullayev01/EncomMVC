@@ -35,11 +35,13 @@
                     {
                         @for (int i = 0; i < languages.Count(); i++)
                         {
+                            <span>@languages[i].Name</span>
                             <div class="form-group">
                                 <label asp-for="@Model[i].Title">@language.Getkey("Title")</label>
                                 <input asp-for="@Model[i].Title" class="form-control">
                                 <span asp-validation-for="@Model[i].Title" class="text text-danger"></span>
                             </div>
+                            <span>@languages[i].Name</span>
                             <div class="form-group">
                                 <label asp-for="@Model[i].Description">@language.Getkey("Description")</label>
                                 <textarea asp-for="@Model[i].Description" class="form-control editor"></textarea>

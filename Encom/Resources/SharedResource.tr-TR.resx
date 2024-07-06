@@ -261,6 +261,9 @@
   <data name="MediaSequence" xml:space="preserve">
     <value>Medya sırası</value>
   </data>
+  <data name="MediaSequenceInstruction" xml:space="preserve">
+    <value>Medyaların sırasını değiştirmek için onları istediğiniz konuma sürükleyin. Değişikliklerinizi kaydetmek için "Gönder"i tıklayın.</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>Mesaj</value>
   </data>

@@ -4,9 +4,6 @@ using Encom.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -32,7 +29,9 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             IQueryable<Project> query = _db.Projects
                 .AsNoTracking()
-                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
+                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name)
+                .OrderByDescending(x => x.CreatedAt)
+                .Include(x => x.ProjectPhotos);
             return View(PageNatedList<Project>.Create(query, pageIndex, 10, 10));
         }
         #endregion
@@ -59,6 +58,14 @@ namespace Encom.Areas.EncomAdmin.Controllers
             foreach (var item in models)
             {
                 List<ProjectPhoto> projectImages = new List<ProjectPhoto>();
+
+                Project? temp = await _db.Projects.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+                string currentUsername = _userManager.GetUserName(HttpContext.User);
+                item.ProjectPhotos = projectImages;
+                item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
+                item.CreatedAt = DateTime.UtcNow.AddHours(4);
+                item.CreatedBy = currentUsername;
+
                 if (models[0].Files != null && models[0].Files.Count() > 0)
                 {
                     int orderNumber = 0;
@@ -79,7 +86,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
                         ProjectPhoto projectImage = new()
                         {
-                            ImagePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images"),
+                            ImagePath = await file.CreateDynamicFileAsync(item.LanguageGroup, _env, "src", "assets", "images"),
                             OrderNumber = orderNumber,
                             Project = item
                         };
@@ -92,12 +99,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     ModelState.AddModelError("[0].Photo", "Image is empty");
                     return View(models);
                 }
-                Project? temp = await _db.Projects.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
-                string currentUsername = _userManager.GetUserName(HttpContext.User);
-                item.ProjectPhotos = projectImages;
-                item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
-                item.CreatedAt = DateTime.UtcNow.AddHours(4);
-                item.CreatedBy = currentUsername;
+
                 await _db.Projects.AddAsync(item);
             }
             #endregion
@@ -173,7 +175,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 {
                                     ProjectPhoto projectImage = new()
                                     {
-                                        ImagePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images"),
+                                        ImagePath = await file.CreateDynamicFileAsync(dbProject.LanguageGroup, _env, "src", "assets", "images"),
                                         OrderNumber = dbProject.ProjectPhotos.Count + 1
                                     };
 
@@ -202,6 +204,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     dbProject.ProjectPhotos.Add(new ProjectPhoto
                     {
                         ImagePath = photo.ImagePath,
+                        OrderNumber = dbProject.ProjectPhotos.Count + 1,
                         Project = dbProject
                     });
                 }
@@ -212,13 +215,10 @@ namespace Encom.Areas.EncomAdmin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        #region Order Number
         public async Task<IActionResult> UpdateOrder(int? id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
+            if (id == null) return BadRequest();
 
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
@@ -226,10 +226,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 .Include(p => p.ProjectPhotos)
                 .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
 
-            if (temp == null)
-            {
-                return NotFound("Project not found.");
-            }
+            if (temp == null) return NotFound();
 
             List<ProjectPhoto> currentPhotos = await _db.ProjectPhotos
                 .Where(x => x.ProjectId == temp.Id)
@@ -239,31 +236,38 @@ namespace Encom.Areas.EncomAdmin.Controllers
             return View(currentPhotos);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> UpdateOrder(List<ProjectPhoto> photos)
         {
-            if (photos == null || photos.Count == 0)
-            {
-                return BadRequest("No data received.");
-            }
+            if (photos == null || photos.Count == 0) return BadRequest();
+
+            var firstPhoto = photos.FirstOrDefault();
+            if (firstPhoto == null || string.IsNullOrEmpty(firstPhoto.ImagePath)) return NotFound();
+
+            var dbPhotos = await _db.ProjectPhotos
+                .Include(p => p.Project)
+                .Where(p => photos.Select(photo => photo.ImagePath).Contains(p.ImagePath))
+                .ToListAsync();
 
             foreach (var photo in photos)
             {
-                _db.Entry(photo).Property(x => x.OrderNumber).IsModified = true;
+                var matchedPhotos = dbPhotos
+                    .Where(p => p.ImagePath == photo.ImagePath)
+                    .ToList();
+
+                foreach (var matchedPhoto in matchedPhotos)
+                {
+                    matchedPhoto.OrderNumber = photo.OrderNumber;
+                    _db.Entry(matchedPhoto).Property(x => x.OrderNumber).IsModified = true;
+                }
             }
 
-            try
-            {
-                await _db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest($"Failed to update photos: {ex.Message}");
-            }
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+        #endregion
 
+        #region Delete Image
         [HttpDelete]
         public async Task<IActionResult> DeleteImage(int? id, string? imagePath)
         {
@@ -294,6 +298,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
         }
         #endregion
 
+        #endregion
+
         #region Detail
         public async Task<IActionResult> Detail(int? id)
         {
@@ -310,7 +316,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             Project? project = await _db.Projects.AsNoTracking()
                 .Include(x => x.Language)
-                .Include(x => x.ProjectPhotos.OrderBy(x=>x.OrderNumber))
+                .Include(x => x.ProjectPhotos.OrderBy(x => x.OrderNumber))
                 .FirstOrDefaultAsync(x => x.LanguageGroup == temp.LanguageGroup && x.Language!.Culture == CultureInfo.CurrentCulture.Name); ;
             if (project == null) return BadRequest();
             return View(project);

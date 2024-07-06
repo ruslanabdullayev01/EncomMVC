@@ -318,6 +318,9 @@
   <data name="MediaSequence" xml:space="preserve">
     <value>Media Sequence</value>
   </data>
+  <data name="MediaSequenceInstruction" xml:space="preserve">
+    <value>To change the order of photos, drag them to the desired location. Click "Submit" to save your changes.</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>Message</value>
   </data>

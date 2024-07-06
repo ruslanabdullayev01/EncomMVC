@@ -309,6 +309,9 @@
   <data name="MediaSequence" xml:space="preserve">
     <value>Media ardıcıllığı</value>
   </data>
+  <data name="MediaSequenceInstruction" xml:space="preserve">
+    <value>Şəkillərin sırasını dəyişmək üçün onları istədiyiniz yerə sürüşdürün. Dəyişikliklərinizi saxlamaq üçün "Göndər" düyməsini basın.</value>
+  </data>
   <data name="Message" xml:space="preserve">
     <value>Mesaj</value>
   </data>

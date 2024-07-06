@@ -20,7 +20,7 @@
                     {
                         @for (int i = 0; i < languages.Count(); i++)
                         {
-                            <span style="color:rgba(255,255,255,.85);">@languages[i].Name</span>
+                            <span>@languages[i].Name</span>
                             <div class="form-group">
                                 <label asp-for="@Model[i].Value">@language.Getkey("Value")</label>
                                 <input asp-for="@Model[i].Value" class="form-control" />

@@ -45,6 +45,7 @@
                                         @about.Title
                                     </td>
                                     <td style="vertical-align: middle; text-align: center; ">
+                                        <a asp-action="UpdateOrder" asp-route-id="@about.Id" class="btn btn-success text-white mr-2">@language.Getkey("MediaSequence")</a>
                                         <a asp-action="Detail" asp-route-id="@about.Id" class="btn btn-warning text-white mr-2">@language.Getkey("Details")</a>
                                         <a asp-action="Update" asp-route-id="@about.Id" class="btn btn-info text-white mr-2">@language.Getkey("Update")</a>
                                     </td>

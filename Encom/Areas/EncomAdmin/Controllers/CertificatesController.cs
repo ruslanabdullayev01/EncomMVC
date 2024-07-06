@@ -146,11 +146,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 FileHelper.DeleteFile(certificate.ImagePath, _env, "src", "assets", "images");
             }
 
-            //string currentUsername = _userManager.GetUserName(HttpContext.User);
-            //certificate.IsDeleted = true;
-            //certificate.DeletedBy = currentUsername;
-            //certificate.DeletedAt = DateTime.UtcNow.AddHours(4);
-
             _db.Certificates.Remove(certificate);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

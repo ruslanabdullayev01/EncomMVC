@@ -8,8 +8,7 @@ namespace Encom.Models
         [NotMapped]
         public IFormFile? File { get; set; }
         public string? FilePath { get; set; }
-
-        public bool IsMain { get; set; }
+        public int OrderNumber { get; set; }
 
         public About? About { get; set; }
         public int AboutId { get; set; }

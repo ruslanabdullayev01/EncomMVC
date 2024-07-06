@@ -20,6 +20,7 @@
                             <tr>
                                 <th>
                                     №
+
                                 </th>
                                 <th>
                                     @language.Getkey("Image")
@@ -41,7 +42,14 @@
                                         @No
                                     </td>
                                     <td>
-                                        <img style="height:90px; border-radius:0px; object-fit:cover" src="~/src/assets/images/ ">
+                                        @if (project.ProjectPhotos != null && project.ProjectPhotos.Count > 0)
+                                        {
+                                            <img style="height:90px; border-radius:0px; object-fit:cover" src="~/@project.ProjectPhotos.Where(x=>x.OrderNumber==1).FirstOrDefault()?.ImagePath">
+                                        }
+                                        else
+                                        {
+                                            <img style="height:90px; border-radius:0px; object-fit:cover" src="~/">
+                                        }
                                     </td>
                                     <td>
                                         @project.Title

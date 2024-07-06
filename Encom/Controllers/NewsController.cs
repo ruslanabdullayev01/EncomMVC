@@ -18,8 +18,8 @@ namespace Encom.Controllers
         {
             List<News>? news = await _db.News
                .AsNoTracking()
-               .OrderBy(x=>x.CreatedAt)
                .Include(x => x.NewsPhotos)
+               .OrderByDescending(x=>x.CreatedAt)
                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name)
                .ToListAsync();
             return View(news);

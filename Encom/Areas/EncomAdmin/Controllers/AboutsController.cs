@@ -30,7 +30,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             IQueryable<About> query = _db.Abouts
                 .AsNoTracking()
-                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
+                .Where(x => !x.IsDeleted && x.Language!.Culture == CultureInfo.CurrentCulture.Name)
+                .Include(x => x.AboutFiles);
             ViewBag.DataCount = query.Count();
             return View(PageNatedList<About>.Create(query, pageIndex, 10, 10));
         }
@@ -58,10 +59,18 @@ namespace Encom.Areas.EncomAdmin.Controllers
             foreach (var item in models)
             {
                 List<AboutFile> aboutFiles = new();
+                About? temp = await _db.Abouts.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
+                string? currentUsername = _userManager.GetUserName(HttpContext.User);
+                item.AboutFiles = aboutFiles;
+                item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
+                item.CreatedAt = DateTime.UtcNow.AddHours(4);
+                item.CreatedBy = currentUsername;
                 if (models[0].Files != null && models[0].Files.Count() > 0)
                 {
+                    int orderNumber = 0;
                     foreach (IFormFile file in models[0].Files)
                     {
+                        orderNumber++;
                         if (!(file.CheckFileContenttype("image/jpeg") ||
                               file.CheckFileContenttype("image/png") ||
                               file.CheckFileContenttype("video/mp4") ||
@@ -79,8 +88,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
                         AboutFile aboutFile = new()
                         {
-                            FilePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images"),
-                            IsMain = aboutFiles.Count == 0,
+                            FilePath = await file.CreateDynamicFileAsync(item.LanguageGroup ,_env, "src", "assets", "images"),
+                            OrderNumber = orderNumber,
                             About = item
                         };
 
@@ -92,13 +101,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     ModelState.AddModelError("[0].File", "Image is empty");
                     return View(models);
                 }
-
-                About? temp = await _db.Abouts.OrderByDescending(a => a.Id).FirstOrDefaultAsync();
-                string? currentUsername = _userManager.GetUserName(HttpContext.User);
-                item.AboutFiles = aboutFiles;
-                item.LanguageGroup = temp != null ? temp.LanguageGroup + 1 : 1;
-                item.CreatedAt = DateTime.UtcNow.AddHours(4);
-                item.CreatedBy = currentUsername;
                 await _db.Abouts.AddAsync(item);
             }
             #endregion
@@ -122,7 +124,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             List<About> abouts = await _db.Abouts
                 .Where(c => c.LanguageGroup == firstAbout.LanguageGroup && c.IsDeleted == false)
-                .Include(x => x.AboutFiles)
+                .Include(x => x.AboutFiles.OrderBy(x=>x.OrderNumber))
                 .ToListAsync();
 
             return View(abouts);
@@ -177,7 +179,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 {
                                     AboutFile aboutFile = new()
                                     {
-                                        FilePath = await file.CreateDynamicFileAsync(_env, "src", "assets", "images")
+                                        FilePath = await file.CreateDynamicFileAsync(dbAbout.LanguageGroup, _env, "src", "assets", "images"),
+                                        OrderNumber = dbAbout.AboutFiles.Count+1
                                     };
 
                                     newFiles.Add(aboutFile);
@@ -205,6 +208,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     dbAbout.AboutFiles.Add(new AboutFile
                     {
                         FilePath = file.FilePath,
+                        OrderNumber = dbAbout.AboutFiles.Count+1,
                         About = dbAbout
                     });
                 }
@@ -215,6 +219,59 @@ namespace Encom.Areas.EncomAdmin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        #region Order Number
+        public async Task<IActionResult> UpdateOrder(int? id)
+        {
+            if (id == null) return BadRequest();
+
+            ViewBag.Languages = await _db.Languages.ToListAsync();
+
+            About? temp = await _db.Abouts
+                .Include(p => p.AboutFiles)
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+
+            if (temp == null) return NotFound();
+
+            List<AboutFile> currentFiles = await _db.AboutFiles
+                .Where(x => x.AboutId == temp.Id)
+                .OrderBy(x => x.OrderNumber)
+                .ToListAsync();
+
+            return View(currentFiles);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder(List<AboutFile> files)
+        {
+            if (files == null || files.Count == 0) return BadRequest();
+
+            var firstFile = files.FirstOrDefault();
+            if (firstFile == null || string.IsNullOrEmpty(firstFile.FilePath)) return NotFound();
+
+            var dbFiles = await _db.AboutFiles
+                .Include(p => p.About)
+                .Where(p => files.Select(file => file.FilePath).Contains(p.FilePath))
+                .ToListAsync();
+
+            foreach (var file in files)
+            {
+                var matchedPhotos = dbFiles
+                    .Where(p => p.FilePath == file.FilePath)
+                    .ToList();
+
+                foreach (var matchedPhoto in matchedPhotos)
+                {
+                    matchedPhoto.OrderNumber = file.OrderNumber;
+                    _db.Entry(matchedPhoto).Property(x => x.OrderNumber).IsModified = true;
+                }
+            }
+
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
+
+        #region Delete Image
         [HttpDelete]
         public async Task<IActionResult> DeleteImage(int? id, string? filePath)
         {
@@ -245,6 +302,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
         }
         #endregion
 
+        #endregion
+
         #region Detail
         public async Task<IActionResult> Detail(int? id)
         {
@@ -258,7 +317,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             About? about = await _db.Abouts.AsNoTracking()
                 .Include(x => x.Language)
-                .Include(x => x.AboutFiles)
+                .Include(x => x.AboutFiles.OrderBy(x => x.OrderNumber))
                 .FirstOrDefaultAsync(x => x.LanguageGroup == temp.LanguageGroup && x.Language!.Culture == CultureInfo.CurrentCulture.Name);
             if (about == null) return BadRequest();
 
