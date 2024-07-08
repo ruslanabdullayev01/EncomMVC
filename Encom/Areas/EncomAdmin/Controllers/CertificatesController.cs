@@ -49,13 +49,13 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(model.Photo.CheckFileContenttype("image/jpeg") || model.Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("Photo", $"{model.Photo.FileName} is not the correct format");
-                    return View(model);
+                    //return View(model);
                 }
 
                 if (model.Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("Photo", $"Photo must be less than 5 mb");
-                    return View(model);
+                    //return View(model);
                 }
 
                 model.ImagePath = await model.Photo.CreateFileAsync(_env, "src", "assets", "images"); // UNDONE: Source deyise biler
@@ -65,12 +65,24 @@ namespace Encom.Areas.EncomAdmin.Controllers
             else
             {
                 ModelState.AddModelError("Photo", "Image is empty");
-                return View(model);
+                //return View(model);
+            }
+
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
             }
 
             await _db.AddAsync(model);
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -94,7 +106,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
             Certificate? dbCertificate = await _db.Certificates.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
             if (dbCertificate == null) return NotFound();
 
-            if (!ModelState.IsValid) return View();
+            //if (!ModelState.IsValid) return View();
 
             #region Image
             if (certificate.Photo != null)
@@ -102,13 +114,13 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(certificate.Photo.CheckFileContenttype("image/jpeg") || certificate.Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("Photo", $"{certificate.Photo.FileName} is not the correct format");
-                    return View();
+                    //return View();
                 }
 
                 if (certificate.Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("Photo", $"Photo must be less than 5 mb");
-                    return View();
+                    //return View();
                 }
 
                 string previousFilePath = dbCertificate.ImagePath;
@@ -125,9 +137,20 @@ namespace Encom.Areas.EncomAdmin.Controllers
             dbCertificate.UpdatedBy = currentUsername;
             dbCertificate.UpdatedAt = DateTime.UtcNow.AddHours(4);
 
-            await _db.SaveChangesAsync();
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
 
-            return RedirectToAction(nameof(Index));
+                return Json(new { success = false, errors = validationErrors });
+            }
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true } );
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -148,7 +171,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             _db.Certificates.Remove(certificate);
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

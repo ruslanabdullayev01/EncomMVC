@@ -6,7 +6,7 @@
             <div class="card-body">
                 <div class="card-title">@language.Getkey("UpdateSocialMedias")</div>
                 <hr>
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="updateSocialMediaForm">
                     <div class="form-group">
                         <label asp-for="@Model.Facebook">Facebook</label>
                         <input asp-for="@Model.Facebook" class="form-control">
@@ -39,4 +39,37 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            $('#updateSocialMediaForm').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var $submitButton = $form.find('button[type="submit"]');
+                $submitButton.prop('disabled', true);
+
+                $.ajax({
+                    url: '@Url.Action("Update", "SocialMedias")',
+                    type: 'POST',
+                    data: $('#updateSocialMediaForm').serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("Index", "SocialMedias")';
+                        } else {
+                            $.each(response.errors, function (key, value) {
+                                $('[data-valmsg-for="' + key + '"]').text(value);
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    },
+                    complete: function () {
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
 }

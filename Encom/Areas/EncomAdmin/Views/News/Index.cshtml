@@ -43,7 +43,7 @@
                                     <td>
                                         @if (news.NewsPhotos != null && news.NewsPhotos.Count > 0)
                                         {
-                                            <img style="height:90px; border-radius:0px; object-fit:cover" src="~/@news.NewsPhotos.Where(x=>x.OrderNumber==1).FirstOrDefault()?.ImagePath">
+                                            <img style="height:75px; width:135px; border-radius:0px; object-fit:contain" src="~/@news.NewsPhotos.Where(x=>x.OrderNumber==1).FirstOrDefault()?.ImagePath">
                                         }
                                         else
                                         {
@@ -111,6 +111,7 @@
             $(document).on('click', '.deleteIndex', function (e) {
                 e.preventDefault();
                 var deleteUrl = $(this).attr('href');
+                var row = $(this).closest('tr');
 
                 swal({
                     title: "Are you sure?",
@@ -124,18 +125,34 @@
                             $.ajax({
                                 url: deleteUrl,
                                 type: 'DELETE',
-                                success: function (result) {
-                                    swal({
-                                        icon: "success",
-                                        text: "Your data has been deleted!",
-                                        buttons: false,
-                                    })
-                                    setTimeout(() => {
-                                        location.reload();
-                                    }, 1000)
+                                success: function (response) {
+                                    if (response.success) {
+                                        swal({
+                                            icon: "success",
+                                            text: "Your data has been deleted!",
+                                            buttons: false,
+                                            timer: 1000
+                                        });
+                                        row.fadeOut(1000, function () {
+                                            $(this).remove();
+                                        });
+                                    } else {
+                                        swal({
+                                            icon: "error",
+                                            text: response.message,
+                                            buttons: false,
+                                            timer: 1000
+                                        });
+                                    }
                                 },
                                 error: function (error) {
                                     console.error('Error:', error);
+                                    swal({
+                                        icon: "error",
+                                        text: "An error occurred. Please try again later.",
+                                        buttons: false,
+                                        timer: 2000
+                                    });
                                 }
                             });
                         } else {
@@ -150,5 +167,4 @@
             });
         });
     </script>
-
 }

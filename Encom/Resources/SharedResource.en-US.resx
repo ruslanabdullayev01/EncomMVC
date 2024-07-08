@@ -168,6 +168,12 @@
   <data name="CertificatesAndLicenses" xml:space="preserve">
     <value>Certificates and Licenses</value>
   </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm Password</value>
   </data>
@@ -313,7 +319,7 @@
     <value>Map</value>
   </data>
   <data name="MapLink" xml:space="preserve">
-    <value>MapLink</value>
+    <value>Map Link</value>
   </data>
   <data name="MediaSequence" xml:space="preserve">
     <value>Media Sequence</value>

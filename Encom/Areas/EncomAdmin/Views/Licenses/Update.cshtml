@@ -11,7 +11,7 @@
                 <div style="margin:5px">
                     <img style="width:150px; height:100px;object-fit:contain;" src="~/src/assets/images/@Model[0].ImagePath">
                 </div>
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="updateLicenseForm">
                     <div class="form-group">
                         <label asp-for="@Model[0].Photo">@language.Getkey("Image")</label>
                         <input accept="image/*" asp-for="@Model[0].Photo" class="form-control">
@@ -42,4 +42,42 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#updateLicenseForm').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var $submitButton = $form.find('button[type="submit"]');
+                $submitButton.prop('disabled', true);
+
+                var formData = new FormData($form[0]);
+
+                $.ajax({
+                    url: '@Url.Action("Update", "Licenses")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("Index", "Licenses")';
+                        } else {
+                            $('.text-danger').text('');
+
+                            $.each(response.errors, function (key, value) {
+                                $('[data-valmsg-for="' + key + '"]').text(value);
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    },
+                    complete: function () {
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
 }

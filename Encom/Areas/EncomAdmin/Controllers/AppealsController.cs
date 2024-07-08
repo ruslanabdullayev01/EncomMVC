@@ -79,9 +79,10 @@ namespace Encom.Areas.EncomAdmin.Controllers
             appeal.IsDeleted = true;
             appeal.DeletedBy = currentUsername;
             appeal.DeletedAt = DateTime.UtcNow.AddHours(4);
-            await _db.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            await _db.SaveChangesAsync();
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

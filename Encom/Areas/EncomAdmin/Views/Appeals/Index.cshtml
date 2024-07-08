@@ -118,16 +118,15 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    console.log(window.location.href)
-    if (window.location.href.indexOf("=read") > -1) document.querySelector("#readInput").checked = true;
-    else if (window.location.href.indexOf("=unread") > -1) document.querySelector("#unreadInput").checked = true;
-    else if (window.location.href.indexOf("=all") > -1) document.querySelector("#allInput").checked = true;
-    else document.querySelector("#unreadInput").checked = true;
-
-</script>
-
 @section Scripts {
+    <script type="text/javascript">
+        console.log(window.location.href)
+        if (window.location.href.indexOf("=read") > -1) document.querySelector("#readInput").checked = true;
+        else if (window.location.href.indexOf("=unread") > -1) document.querySelector("#unreadInput").checked = true;
+        else if (window.location.href.indexOf("=all") > -1) document.querySelector("#allInput").checked = true;
+        else document.querySelector("#unreadInput").checked = true;
+
+    </script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
         .swal-title {
@@ -144,6 +143,7 @@
             $(document).on('click', '.deleteIndex', function (e) {
                 e.preventDefault();
                 var deleteUrl = $(this).attr('href');
+                var row = $(this).closest('tr');
 
                 swal({
                     title: "Are you sure?",
@@ -157,18 +157,34 @@
                             $.ajax({
                                 url: deleteUrl,
                                 type: 'DELETE',
-                                success: function (result) {
-                                    swal({
-                                        icon: "success",
-                                        text: "Your data has been deleted!",
-                                        buttons: false,
-                                    })
-                                    setTimeout(() => {
-                                        location.reload();
-                                    }, 1000)
+                                success: function (response) {
+                                    if (response.success) {
+                                        swal({
+                                            icon: "success",
+                                            text: "Your data has been deleted!",
+                                            buttons: false,
+                                            timer: 1000
+                                        });
+                                        row.fadeOut(1000, function () {
+                                            $(this).remove();
+                                        });
+                                    } else {
+                                        swal({
+                                            icon: "error",
+                                            text: response.message,
+                                            buttons: false,
+                                            timer: 1000
+                                        });
+                                    }
                                 },
                                 error: function (error) {
                                     console.error('Error:', error);
+                                    swal({
+                                        icon: "error",
+                                        text: "An error occurred. Please try again later.",
+                                        buttons: false,
+                                        timer: 2000
+                                    });
                                 }
                             });
                         } else {
@@ -183,5 +199,4 @@
             });
         });
     </script>
-
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Encom.Areas.EncomAdmin.Controllers
@@ -47,31 +48,31 @@ namespace Encom.Areas.EncomAdmin.Controllers
         public async Task<IActionResult> Create(List<Service> models)
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
-            if (!ModelState.IsValid)
-            {
-                return View(models);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(models);
+            //}
             #region Image
             if (models[0].Photo != null)
             {
                 if (!(models[0].Photo.CheckFileContenttype("image/jpeg") || models[0].Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("[0].Photo", $"{models[0].Photo.FileName} is not the correct format");
-                    return View(models);
+                    //return View(models);
                 }
 
                 if (models[0].Photo.CheckFileLength(5120))
                 {
-                    ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                    return View(models);
+                    ModelState.AddModelError("[0].Photo", $"Icon must be less than 5 mb");
+                    //return View(models);
                 }
 
                 models[0].IconPath = await models[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
             }
             else
             {
-                ModelState.AddModelError("[0].Photo", "Image is empty");
-                return View(models);
+                ModelState.AddModelError("[0].Photo", "Icon is empty");
+                //return View(models);
             }
             #endregion
 
@@ -87,8 +88,34 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 await _db.Services.AddAsync(item);
             }
 
+            #region Validations
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(models[i].Name))
+                {
+                    ModelState.AddModelError($"[{i}].Name", "The Name field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(models[i].Description))
+                {
+                    ModelState.AddModelError($"[{i}].Description", "The Description field is required.");
+                }
+            }
+
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -117,7 +144,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid) return View(services);
+            //if (!ModelState.IsValid) return View(services);
 
             if (id == null) return BadRequest();
 
@@ -135,24 +162,27 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(services[0].Photo.CheckFileContenttype("image/jpeg") || services[0].Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("[0].Photo", $"{services[0].Photo.FileName} is not the correct format");
-                    return View(services[0]);
+                    //return View(services[0]);
                 }
 
                 if (services[0].Photo.CheckFileLength(5120))
                 {
-                    ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                    return View(services[0]);
+                    ModelState.AddModelError("[0].Photo", $"Icon must be less than 5 mb");
+                    //return View(services[0]);
                 }
 
-                string previousFilePath = dbServices[0].IconPath;
-                if (previousFilePath != null)
+                if (ModelState.IsValid)
                 {
-                    FileHelper.DeleteFile(previousFilePath, _env, "src", "assets", "images");
-                }
-                string imagePath = await services[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
-                foreach (Service service in dbServices)
-                {
-                    service.IconPath = imagePath;
+                    string previousFilePath = dbServices[0].IconPath;
+                    if (previousFilePath != null)
+                    {
+                        FileHelper.DeleteFile(previousFilePath, _env, "src", "assets", "images");
+                    }
+                    string imagePath = await services[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
+                    foreach (Service service in dbServices)
+                    {
+                        service.IconPath = imagePath;
+                    }
                 }
             }
             #endregion
@@ -167,9 +197,33 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 dbService.UpdatedBy = currentUsername;
             }
 
-            await _db.SaveChangesAsync();
+            #region Validations
+            for (int i = 0; i < services.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(services[i].Name))
+                {
+                    ModelState.AddModelError($"[{i}].Name", "The Name field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(services[i].Description))
+                {
+                    ModelState.AddModelError($"[{i}].Description", "The Description field is required.");
+                }
+            }
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
 
-            return RedirectToAction(nameof(Index));
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -201,8 +255,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
             }
 
             await _db.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

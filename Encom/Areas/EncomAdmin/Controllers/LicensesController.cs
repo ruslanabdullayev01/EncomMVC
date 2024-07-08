@@ -47,10 +47,10 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View(models);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(models);
+            //}
 
             #region Image
             if (models[0].Photo != null)
@@ -58,13 +58,13 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(models[0].Photo.CheckFileContenttype("image/jpeg") || models[0].Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("[0].Photo", $"{models[0].Photo.FileName} is not the correct format");
-                    return View(models);
+                    //return View(models);
                 }
 
                 if (models[0].Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                    return View(models);
+                    //return View(models);
                 }
 
                 models[0].ImagePath = await models[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
@@ -72,7 +72,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
             else
             {
                 ModelState.AddModelError("[0].Photo", "Image is empty");
-                return View(models);
+                //return View(models);
             }
             #endregion
 
@@ -87,8 +87,30 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 await _db.Licenses.AddAsync(item);
             }
 
+            #region Validations
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(models[i].Name))
+                {
+                    ModelState.AddModelError($"[{i}].Name", "The Name field is required.");
+                }
+            }
+
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -117,7 +139,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid) return View(licenses);
+            //if (!ModelState.IsValid) return View(licenses);
 
             if (id == null) return BadRequest();
 
@@ -136,13 +158,13 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(licenses[0].Photo.CheckFileContenttype("image/jpeg") || licenses[0].Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("[0].Photo", $"{licenses[0].Photo.FileName} is not the correct format");
-                    return View(licenses);
+                    //return View(licenses);
                 }
 
                 if (licenses[0].Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                    return View(licenses);
+                    //return View(licenses);
                 }
 
                 string previousFilePath = dbLicenses[0].ImagePath;
@@ -162,13 +184,34 @@ namespace Encom.Areas.EncomAdmin.Controllers
             foreach (License item in licenses)
             {
                 License? dbLicense = dbLicenses.FirstOrDefault(s => s.LanguageId == item.LanguageId);
-                dbLicense.Name = item.Name.Trim();
+                dbLicense.Name = item.Name != null ? item.Name.Trim() : null;
                 dbLicense.UpdatedAt = DateTime.UtcNow.AddHours(4);
                 dbLicense.UpdatedBy = currentUsername;
             }
 
+            #region Validations
+            for (int i = 0; i < licenses.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(licenses[i].Name))
+                {
+                    ModelState.AddModelError($"[{i}].Name", "The Name field is required.");
+                }
+            }
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -225,7 +268,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
             }
 
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

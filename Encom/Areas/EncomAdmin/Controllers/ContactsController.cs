@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 
 namespace Encom.Areas.EncomAdmin.Controllers
@@ -52,6 +53,41 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             string? currentUsername = _userManager.GetUserName(HttpContext.User);
 
+            #region Validations
+            var validationErrors = new Dictionary<string, string[]>();
+
+            if (string.IsNullOrWhiteSpace(models[0].Email))
+            {
+                ModelState.AddModelError("[0].Email", "The Email field is required.");
+            }
+            if (string.IsNullOrWhiteSpace(models[0].Number))
+            {
+                ModelState.AddModelError("[0].Number", "The Number field is required.");
+            }
+            if (string.IsNullOrWhiteSpace(models[0].MapIFrame))
+            {
+                ModelState.AddModelError("[0].MapIFrame", "The Map link field is required.");
+            }
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(models[i].Address))
+                {
+                    ModelState.AddModelError($"[{i}].Address", "The Address field is required.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             foreach (Contact item in models)
             {
                 item.Email = models[0].Email;
@@ -65,7 +101,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
 
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -122,9 +159,44 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 }
             }
 
-            await _db.SaveChangesAsync();
+            #region Validations
+            var validationErrors = new Dictionary<string, string[]>();
 
-            return RedirectToAction(nameof(Index));
+            if (string.IsNullOrWhiteSpace(contacts[0].Email))
+            {
+                ModelState.AddModelError("[0].Email", "The Email field is required.");
+            }
+            if (string.IsNullOrWhiteSpace(contacts[0].Number))
+            {
+                ModelState.AddModelError("[0].Number", "The Number field is required.");
+            }
+            if (string.IsNullOrWhiteSpace(contacts[0].MapIFrame))
+            {
+                ModelState.AddModelError("[0].MapIFrame", "The Map link field is required.");
+            }
+
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(contacts[i].Address))
+                {
+                    ModelState.AddModelError($"[{i}].Address", "The Address field is required.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 

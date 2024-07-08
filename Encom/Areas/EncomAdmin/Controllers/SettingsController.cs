@@ -4,6 +4,7 @@ using Encom.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Encom.Areas.EncomAdmin.Controllers
@@ -61,7 +62,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid) return View(settings);
+            //if (!ModelState.IsValid) return View(settings);
 
             if (id == null) return BadRequest();
 
@@ -79,11 +80,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
             {
                 if (setting == null) return NotFound();
             }
-            //if (settings[0].Key == null)
-            //{
-            //    ModelState.AddModelError("[0].Key", "Key is cannot null");
-            //    return View(dbSettings);
-            //}
 
             foreach (Setting setting in settings)
             {
@@ -93,8 +89,29 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 dbSetting.Value = setting.Value;
             }
 
+            #region Validations
+            for (int i = 0; i < settings.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(settings[i].Value))
+                {
+                    ModelState.AddModelError($"[{i}].Value", "The Value field is required.");
+                }
+            }
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             await _db.SaveChangesAsync();
-            return RedirectToAction("Index", "Settings");
+            return Json(new { success = true });
+            //return RedirectToAction("Index", "Settings");
 
         }
         #endregion

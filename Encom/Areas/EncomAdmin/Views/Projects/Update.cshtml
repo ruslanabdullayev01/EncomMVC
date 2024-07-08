@@ -19,7 +19,7 @@
             <div class="card-body">
                 <div class="card-title">@language.Getkey("UpdateProject")</div>
                 <hr>
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="updateProjectForm">
                     <div class="form-group">
                         <label asp-for="@Model[0].Files">@language.Getkey("Images")</label>
                         <input accept="image/*" asp-for="@Model[0].Files" class="form-control">
@@ -124,6 +124,44 @@
                         });
                     }
                 });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#updateProjectForm').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var $submitButton = $form.find('button[type="submit"]');
+                $submitButton.prop('disabled', true);
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("Update", "Projects")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("Index", "Projects")';
+                        } else {
+                            $('.text-danger').text('');
+
+                            $.each(response.errors, function (key, value) {
+                                $('[data-valmsg-for="' + key + '"]').text(value);
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    },
+                    complete: function () {
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
         });
     </script>
 }

@@ -8,7 +8,7 @@
             <div class="card-body">
                 <div class="card-title">@language.Getkey("CreateService")</div>
                 <hr>
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="createServiceForm">
                     <div class="form-group">
                         <label asp-for="@Model[0].Photo">@language.Getkey("Icon")</label>
                         <input accept="image/*" asp-for="@Model[0].Photo" class="form-control">
@@ -45,4 +45,42 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#createServiceForm').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var $submitButton = $form.find('button[type="submit"]');
+                $submitButton.prop('disabled', true);
+
+                var formData = new FormData($form[0]);
+
+                $.ajax({
+                    url: '@Url.Action("Create", "Services")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("Index", "Services")';
+                        } else {
+                            $('.text-danger').text('');
+
+                            $.each(response.errors, function (key, value) {
+                                $('[data-valmsg-for="' + key + '"]').text(value);
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    },
+                    complete: function () {
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
 }

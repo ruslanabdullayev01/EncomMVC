@@ -41,9 +41,19 @@ namespace Encom.Areas.EncomAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SocialMedia model)
         {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
+            var validationErrors = new Dictionary<string, string[]>();
             if (!ModelState.IsValid)
             {
-                return View(model);
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
             }
 
             string? currentUsername = _userManager.GetUserName(HttpContext.User);
@@ -57,10 +67,12 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 CreatedBy = currentUsername
             };
 
-            await _db.SocialMedias.AddAsync(socialMedia);
 
+
+            await _db.SocialMedias.AddAsync(socialMedia);
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -81,7 +93,18 @@ namespace Encom.Areas.EncomAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int? id, SocialMedia socialMedia)
         {
-            if (!ModelState.IsValid) return View(socialMedia);
+            //if (!ModelState.IsValid) return View(socialMedia);
+
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
 
             if (id == null) return BadRequest();
 
@@ -101,7 +124,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
             dbSocialMedia.UpdatedBy = currentUsername;
 
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
     }

@@ -19,12 +19,12 @@
             <div class="card-body">
                 <div class="card-title">@language.Getkey("UpdateAboutUs")</div>
                 <hr>
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="updateAboutUsForm">
                     <div class="form-group">
                         <label asp-for="@Model[0].Files">@language.Getkey("ImagesAndVideo")</label>
                         <input accept="image/*,video/*" asp-for="@Model[0].Files" class="form-control">
                         <span asp-validation-for="@Model[0].Files" class="text-danger"></span>
-                        <div class="imageContainer d-flex">
+                        <div class="imageContainer d-flex" id="imageContainer">
                             @if (Model[0].AboutFiles != null && Model[0].AboutFiles.Count > 0)
                             {
                                 @await Html.PartialAsync("_AboutFilePartial", Model[0].AboutFiles)
@@ -90,7 +90,7 @@
                                 if (data.success) {
                                     button.closest('.image-wrapper').remove();
                                     if ($('.image-wrapper').length === 1) {
-                                        $('.deleteImage').hide(); 
+                                        $('.deleteImage').hide();
                                     }
                                     swal({
                                         icon: "success",
@@ -125,6 +125,45 @@
                         });
                     }
                 });
+        });
+        $('#imageContainer').load(location.href + ' #imageContainer');
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#updateAboutUsForm').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var $submitButton = $form.find('button[type="submit"]');
+                $submitButton.prop('disabled', true);
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("Update", "Abouts")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("Index", "Abouts")';
+                        } else {
+                            $('.text-danger').text('');
+
+                            $.each(response.errors, function (key, value) {
+                                $('[data-valmsg-for="' + key + '"]').text(value);
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    },
+                    complete: function () {
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
         });
     </script>
 }

@@ -1,9 +1,12 @@
-﻿namespace Encom.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace Encom.Models
 {
     public class Contact : BaseEntity
     {
         public string? Address { get; set; }
-        public string? Email { get; set; }
+        [EmailAddress] public string? Email { get; set; }
         public string? Number { get; set; }
         public string? MapIFrame { get; set; }
 

@@ -32,7 +32,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
             if (user == null) return NotFound();
 
             await _userManager.DeleteAsync(user);
-            return RedirectToAction("Index", "Users");
+            return Json(new { success = true });
+            //return RedirectToAction("Index", "Users");
         }
     }
 }

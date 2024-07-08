@@ -6,11 +6,11 @@
             <div class="card-body">
                 <div class="card-title">@language.Getkey("CreateCertificate")</div>
                 <hr>
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" id="createCertificateForm">
                     <div class="form-group">
                         <label asp-for="@Model.Photo">@language.Getkey("Image")</label>
                         <input accept="image/*" asp-for="@Model.Photo" class="form-control">
-                        <span asp-validation-for="@Model.Photo" class="text-danger"></span>
+                        <span asp-validation-for="@Model.Photo" class="text-danger" style="display:block"></span>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary px-5">@language.Getkey("Submit")</button>
@@ -23,4 +23,42 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#createCertificateForm').submit(function (e) {
+                e.preventDefault();
+
+                var $form = $(this);
+                var $submitButton = $form.find('button[type="submit"]');
+                $submitButton.prop('disabled', true);
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("Create", "Certificates")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("Index", "Certificates")';
+                        } else {
+                            $('.text-danger').text('');
+
+                            $.each(response.errors, function (key, value) {
+                                $('[data-valmsg-for="' + key + '"]').text(value);
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    },
+                    complete: function () {
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
 }

@@ -4,8 +4,8 @@ namespace Encom.Models
 {
     public class News : BaseEntity
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
 
         //UNDONE: Date ???
 

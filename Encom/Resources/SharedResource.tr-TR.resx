@@ -153,6 +153,12 @@
   <data name="CertificatesAndLicenses" xml:space="preserve">
     <value>Sertifikalar ve Lisanslar</value>
   </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Temizlemek</value>
+  </data>
+  <data name="ClearAll" xml:space="preserve">
+    <value>Hepsini temizle</value>
+  </data>
   <data name="Contact" xml:space="preserve">
     <value>İletişim</value>
   </data>

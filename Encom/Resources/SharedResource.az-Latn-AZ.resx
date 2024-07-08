@@ -165,6 +165,12 @@
   <data name="CertificatesAndLicenses" xml:space="preserve">
     <value>Sertifikatlar və Lisenziyalar</value>
   </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Təmizlə</value>
+  </data>
+  <data name="ClearAll" xml:space="preserve">
+    <value>Hamısını təmizlə</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Şifrəni təsdiqləyin</value>
   </data>

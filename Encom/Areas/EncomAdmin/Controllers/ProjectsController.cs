@@ -49,12 +49,13 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View(models);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(models);
+            //}
 
             #region Image
+            bool fileErrorAdded = false;
             foreach (var item in models)
             {
                 List<ProjectPhoto> projectImages = new List<ProjectPhoto>();
@@ -74,14 +75,22 @@ namespace Encom.Areas.EncomAdmin.Controllers
                         orderNumber++;
                         if (!(file.CheckFileContenttype("image/jpeg") || file.CheckFileContenttype("image/png")))
                         {
-                            ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
-                            return View(models);
+                            if (!fileErrorAdded)
+                            {
+                                ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
+                                fileErrorAdded = true;
+                            }
+                            //return View(models);
                         }
 
                         if (file.CheckFileLength(5120))
                         {
-                            ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                            return View(models);
+                            if (!fileErrorAdded)
+                            {
+                                ModelState.AddModelError("[0].Files", $"Photo must be less than 5 mb");
+                                fileErrorAdded = true;
+                            }
+                            //return View(models);
                         }
 
                         ProjectPhoto projectImage = new()
@@ -96,16 +105,46 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("[0].Photo", "Image is empty");
-                    return View(models);
+                    if (!fileErrorAdded)
+                    {
+                        ModelState.AddModelError("[0].Files", "Image is empty");
+                        fileErrorAdded = true;
+                    }
+                    //return View(models);
                 }
 
                 await _db.Projects.AddAsync(item);
             }
             #endregion
 
+            #region Validations
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(models[i].Title))
+                {
+                    ModelState.AddModelError($"[{i}].Title", "The Title field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(models[i].Description))
+                {
+                    ModelState.AddModelError($"[{i}].Description", "The Description field is required.");
+                }
+            }
+
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -135,7 +174,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid) return View(projects);
+            //if (!ModelState.IsValid) return View(projects);
 
             if (id == null) return BadRequest();
 
@@ -153,15 +192,15 @@ namespace Encom.Areas.EncomAdmin.Controllers
             if (dbProjectsList == null || dbProjectsList.Count == 0) return NotFound();
 
             List<ProjectPhoto> newPhotos = new List<ProjectPhoto>();
-
+            bool fileErrorAdded = false;
             foreach (var item in projects)
             {
                 var dbProject = dbProjectsList.FirstOrDefault(s => s.LanguageId == item.LanguageId);
                 if (dbProject != null)
                 {
                     string? currentUsername = _userManager.GetUserName(HttpContext.User);
-                    dbProject.Title = item.Title.Trim();
-                    dbProject.Description = item.Description.Trim();
+                    dbProject.Title = item.Title != null ? item.Title.Trim() : null;
+                    dbProject.Description = item.Description != null ? item.Description.Trim() : null;
                     dbProject.UpdatedAt = DateTime.UtcNow.AddHours(4);
                     dbProject.UpdatedBy = currentUsername;
 
@@ -183,14 +222,22 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 }
                                 else
                                 {
-                                    ModelState.AddModelError("[0].Photo", $"Photo must be less than 5 mb");
-                                    return View(projects);
+                                    if (!fileErrorAdded)
+                                    {
+                                        ModelState.AddModelError("[0].Files", $"Photo must be less than 5 mb");
+                                        fileErrorAdded = true;
+                                    }
+                                    //return View(projects);
                                 }
                             }
                             else
                             {
-                                ModelState.AddModelError("[0].Photo", $"{file.FileName} is not the correct format");
-                                return View(projects);
+                                if (!fileErrorAdded)
+                                {
+                                    ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
+                                    fileErrorAdded = true;
+                                }
+                                //return View(projects);
                             }
                         }
                     }
@@ -210,9 +257,34 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 }
             }
 
-            await _db.SaveChangesAsync();
+            #region Validations
+            for (int i = 0; i < projects.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(projects[i].Title))
+                {
+                    ModelState.AddModelError($"[{i}].Title", "The Title field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(projects[i].Description))
+                {
+                    ModelState.AddModelError($"[{i}].Description", "The Description field is required.");
+                }
+            }
 
-            return RedirectToAction(nameof(Index));
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
 
         #region Order Number
@@ -360,7 +432,8 @@ namespace Encom.Areas.EncomAdmin.Controllers
             }
 
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

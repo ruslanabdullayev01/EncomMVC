@@ -8,7 +8,7 @@ namespace Encom.Models
         [StringLength(255)]
         public string? Key { get; set; }
         [StringLength(1000)]
-        public string Value { get; set; }
+        public string? Value { get; set; }
         public int? LanguageId { get; set; }
         public Language? Language { get; set; }
         public int LanguageGroup { get; set; }

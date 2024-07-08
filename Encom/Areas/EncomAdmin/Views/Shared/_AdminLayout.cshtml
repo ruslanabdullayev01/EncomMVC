@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Encom.Constants
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -103,7 +104,7 @@
 
 
 
-                @if (User.IsInRole("SuperAdmin"))
+                @if (User.IsInRole(nameof(UserRoles.SuperAdmin)))
                 {
                     <li>
                         <a asp-controller="Users" asp-action="Index">

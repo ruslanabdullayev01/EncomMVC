@@ -10,7 +10,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h2 class="card-title">@language.Getkey("Users")</h2>
-                    <a asp-area="" asp-controller="Account" asp-action="SignUp" class="btn btn-primary text-white mr-2">@language.Getkey("Create")</a>
+                    <a asp-area="" asp-controller="Accounts" asp-action="SignUp" class="btn btn-primary text-white mr-2">@language.Getkey("Create")</a>
 
                 </div>
                 <div class="table-responsive pt-3">
@@ -107,6 +107,7 @@
             $(document).on('click', '.deleteIndex', function (e) {
                 e.preventDefault();
                 var deleteUrl = $(this).attr('href');
+                var row = $(this).closest('tr');
 
                 swal({
                     title: "Are you sure?",
@@ -120,18 +121,34 @@
                             $.ajax({
                                 url: deleteUrl,
                                 type: 'DELETE',
-                                success: function (result) {
-                                    swal({
-                                        icon: "success",
-                                        text: "Your data has been deleted!",
-                                        buttons: false,
-                                    })
-                                    setTimeout(() => {
-                                        location.reload();
-                                    }, 1000)
+                                success: function (response) {
+                                    if (response.success) {
+                                        swal({
+                                            icon: "success",
+                                            text: "Your data has been deleted!",
+                                            buttons: false,
+                                            timer: 1000
+                                        });
+                                        row.fadeOut(1000, function () {
+                                            $(this).remove();
+                                        });
+                                    } else {
+                                        swal({
+                                            icon: "error",
+                                            text: response.message,
+                                            buttons: false,
+                                            timer: 1000
+                                        });
+                                    }
                                 },
                                 error: function (error) {
                                     console.error('Error:', error);
+                                    swal({
+                                        icon: "error",
+                                        text: "An error occurred. Please try again later.",
+                                        buttons: false,
+                                        timer: 2000
+                                    });
                                 }
                             });
                         } else {
@@ -146,5 +163,4 @@
             });
         });
     </script>
-
 }

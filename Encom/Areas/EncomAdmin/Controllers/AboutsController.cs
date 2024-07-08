@@ -50,12 +50,13 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid)
-            {
-                return View(models);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(models);
+            //}
 
             #region Image
+            bool fileErrorAdded = false;
             foreach (var item in models)
             {
                 List<AboutFile> aboutFiles = new();
@@ -76,19 +77,26 @@ namespace Encom.Areas.EncomAdmin.Controllers
                               file.CheckFileContenttype("video/mp4") ||
                               file.CheckFileContenttype("video/avi")))
                         {
-                            ModelState.AddModelError("[0].File", $"{file.FileName} is not the correct format");
-                            return View(models);
+                            if (!fileErrorAdded)
+                            {
+                                ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
+                                fileErrorAdded = true;
+                            }
                         }
 
                         if (file.CheckFileLength(20480))
                         {
-                            ModelState.AddModelError("[0].File", $"File must be less than 5 mb");
-                            return View(models);
+                            if (!fileErrorAdded)
+                            {
+                                ModelState.AddModelError("[0].Files", $"File must be less than 20 mb");
+                                fileErrorAdded = true;
+                            }
+                            //return View(models);
                         }
 
                         AboutFile aboutFile = new()
                         {
-                            FilePath = await file.CreateDynamicFileAsync(item.LanguageGroup ,_env, "src", "assets", "images"),
+                            FilePath = await file.CreateDynamicFileAsync(item.LanguageGroup, _env, "src", "assets", "images"),
                             OrderNumber = orderNumber,
                             About = item
                         };
@@ -98,15 +106,44 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("[0].File", "Image is empty");
-                    return View(models);
+                    if (!fileErrorAdded)
+                    {
+                        ModelState.AddModelError("[0].Files", "Image is empty");
+                        fileErrorAdded = true;
+                    }
+                    //return View(models);
                 }
                 await _db.Abouts.AddAsync(item);
             }
             #endregion
 
+            #region Validations
+            for (int i = 0; i < models.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(models[i].Title))
+                {
+                    ModelState.AddModelError($"[{i}].Title", "The Title field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(models[i].Description))
+                {
+                    ModelState.AddModelError($"[{i}].Description", "The Description field is required.");
+                }
+            }
+
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
             await _db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
         #endregion
 
@@ -124,7 +161,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             List<About> abouts = await _db.Abouts
                 .Where(c => c.LanguageGroup == firstAbout.LanguageGroup && c.IsDeleted == false)
-                .Include(x => x.AboutFiles.OrderBy(x=>x.OrderNumber))
+                .Include(x => x.AboutFiles.OrderBy(x => x.OrderNumber))
                 .ToListAsync();
 
             return View(abouts);
@@ -136,7 +173,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            if (!ModelState.IsValid) return View(abouts);
+            //if (!ModelState.IsValid) return View(abouts);
 
             if (id == null) return BadRequest();
 
@@ -155,14 +192,15 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             List<AboutFile> newFiles = new();
 
+            bool fileErrorAdded = false;
             foreach (var item in abouts)
             {
                 var dbAbout = dbAboutsList.FirstOrDefault(s => s.LanguageId == item.LanguageId);
                 if (dbAbout != null)
                 {
                     string? currentUsername = _userManager.GetUserName(HttpContext.User);
-                    dbAbout.Title = item.Title.Trim();
-                    dbAbout.Description = item.Description.Trim();
+                    dbAbout.Title = item.Title != null ? item.Title.Trim() : null;
+                    dbAbout.Description = item.Description != null ? item.Description.Trim() : null;
                     dbAbout.UpdatedAt = DateTime.UtcNow.AddHours(4);
                     dbAbout.UpdatedBy = currentUsername;
 
@@ -180,21 +218,29 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                     AboutFile aboutFile = new()
                                     {
                                         FilePath = await file.CreateDynamicFileAsync(dbAbout.LanguageGroup, _env, "src", "assets", "images"),
-                                        OrderNumber = dbAbout.AboutFiles.Count+1
+                                        OrderNumber = dbAbout.AboutFiles.Count + 1
                                     };
 
                                     newFiles.Add(aboutFile);
                                 }
                                 else
                                 {
-                                    ModelState.AddModelError("[0].File", $"File must be less than 5 mb");
-                                    return View(abouts);
+                                    if (!fileErrorAdded)
+                                    {
+                                        ModelState.AddModelError("[0].Files", $"File must be less than 20 mb");
+                                        fileErrorAdded = true;
+                                    }
+                                    //return View(abouts);
                                 }
                             }
                             else
                             {
-                                ModelState.AddModelError("[0].File", $"{file.FileName} is not the correct format");
-                                return View(abouts);
+                                if (!fileErrorAdded)
+                                {
+                                    ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
+                                    fileErrorAdded = true;
+                                }
+                                //return View(abouts);
                             }
                         }
                     }
@@ -208,15 +254,40 @@ namespace Encom.Areas.EncomAdmin.Controllers
                     dbAbout.AboutFiles.Add(new AboutFile
                     {
                         FilePath = file.FilePath,
-                        OrderNumber = dbAbout.AboutFiles.Count+1,
+                        OrderNumber = dbAbout.AboutFiles.Count + 1,
                         About = dbAbout
                     });
                 }
             }
 
-            await _db.SaveChangesAsync();
+            #region Validations
+            for (int i = 0; i < abouts.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(abouts[i].Title))
+                {
+                    ModelState.AddModelError($"[{i}].Title", "The Title field is required.");
+                }
+                if (string.IsNullOrWhiteSpace(abouts[i].Description))
+                {
+                    ModelState.AddModelError($"[{i}].Description", "The Description field is required.");
+                }
+            }
 
-            return RedirectToAction(nameof(Index));
+            var validationErrors = new Dictionary<string, string[]>();
+            if (!ModelState.IsValid)
+            {
+                validationErrors = ModelState.ToDictionary(
+                    err => err.Key,
+                    err => err.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+                return Json(new { success = false, errors = validationErrors });
+            }
+            #endregion
+
+            await _db.SaveChangesAsync();
+            return Json(new { success = true });
+            //return RedirectToAction(nameof(Index));
         }
 
         #region Order Number

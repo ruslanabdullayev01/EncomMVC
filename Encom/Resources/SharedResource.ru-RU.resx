@@ -153,6 +153,12 @@
   <data name="CertificatesAndLicenses" xml:space="preserve">
     <value>Сертификаты и Лицензии</value>
   </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="ClearAll" xml:space="preserve">
+    <value>Очистить все</value>
+  </data>
   <data name="Contact" xml:space="preserve">
     <value>Контакт</value>
   </data>
