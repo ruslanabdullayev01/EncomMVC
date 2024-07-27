@@ -82,7 +82,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

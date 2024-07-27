@@ -62,8 +62,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            //if (!ModelState.IsValid) return View(settings);
-
             if (id == null) return BadRequest();
 
             Setting? firstSetting = await _db.Settings.FirstOrDefaultAsync(c => c.Id == id);
@@ -111,7 +109,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction("Index", "Settings");
 
         }
         #endregion

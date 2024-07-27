@@ -49,13 +49,11 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(model.Photo.CheckFileContenttype("image/jpeg") || model.Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("Photo", $"{model.Photo.FileName} is not the correct format");
-                    //return View(model);
                 }
 
                 if (model.Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("Photo", $"Photo must be less than 5 mb");
-                    //return View(model);
                 }
 
                 model.ImagePath = await model.Photo.CreateFileAsync(_env, "src", "assets", "images"); // UNDONE: Source deyise biler
@@ -65,7 +63,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
             else
             {
                 ModelState.AddModelError("Photo", "Image is empty");
-                //return View(model);
             }
 
             var validationErrors = new Dictionary<string, string[]>();
@@ -82,7 +79,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
             await _db.AddAsync(model);
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -106,21 +102,17 @@ namespace Encom.Areas.EncomAdmin.Controllers
             Certificate? dbCertificate = await _db.Certificates.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
             if (dbCertificate == null) return NotFound();
 
-            //if (!ModelState.IsValid) return View();
-
             #region Image
             if (certificate.Photo != null)
             {
                 if (!(certificate.Photo.CheckFileContenttype("image/jpeg") || certificate.Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("Photo", $"{certificate.Photo.FileName} is not the correct format");
-                    //return View();
                 }
 
                 if (certificate.Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("Photo", $"Photo must be less than 5 mb");
-                    //return View();
                 }
 
                 string previousFilePath = dbCertificate.ImagePath;
@@ -150,7 +142,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true } );
-            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -172,7 +163,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
             _db.Certificates.Remove(certificate);
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

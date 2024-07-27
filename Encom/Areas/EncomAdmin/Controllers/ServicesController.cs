@@ -48,23 +48,18 @@ namespace Encom.Areas.EncomAdmin.Controllers
         public async Task<IActionResult> Create(List<Service> models)
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(models);
-            //}
+            
             #region Image
             if (models[0].Photo != null)
             {
                 if (!(models[0].Photo.CheckFileContenttype("image/jpeg") || models[0].Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("[0].Photo", $"{models[0].Photo.FileName} is not the correct format");
-                    //return View(models);
                 }
 
                 if (models[0].Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("[0].Photo", $"Icon must be less than 5 mb");
-                    //return View(models);
                 }
 
                 models[0].IconPath = await models[0].Photo.CreateFileAsync(_env, "src", "assets", "images");
@@ -72,7 +67,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
             else
             {
                 ModelState.AddModelError("[0].Photo", "Icon is empty");
-                //return View(models);
             }
             #endregion
 
@@ -115,7 +109,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -144,8 +137,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            //if (!ModelState.IsValid) return View(services);
-
             if (id == null) return BadRequest();
 
             Service? firstService = await _db.Services.FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
@@ -162,13 +153,11 @@ namespace Encom.Areas.EncomAdmin.Controllers
                 if (!(services[0].Photo.CheckFileContenttype("image/jpeg") || services[0].Photo.CheckFileContenttype("image/png")))
                 {
                     ModelState.AddModelError("[0].Photo", $"{services[0].Photo.FileName} is not the correct format");
-                    //return View(services[0]);
                 }
 
                 if (services[0].Photo.CheckFileLength(5120))
                 {
                     ModelState.AddModelError("[0].Photo", $"Icon must be less than 5 mb");
-                    //return View(services[0]);
                 }
 
                 if (ModelState.IsValid)
@@ -223,7 +212,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -256,7 +244,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

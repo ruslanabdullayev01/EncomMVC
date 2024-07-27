@@ -97,7 +97,7 @@ namespace Encom.Controllers
 
             MimeMessage mimeMessage = new MimeMessage();
             mimeMessage.From.Add(MailboxAddress.Parse(_smtpSetting.Email));
-            mimeMessage.To.Add(MailboxAddress.Parse(_smtpSetting.Email)); //UNDONE: Email appsettings de qeyd olunmalidir
+            mimeMessage.To.Add(MailboxAddress.Parse(_smtpSetting.Email)); //UNDONE: ENTER EMAIL IN appsettings.json
             mimeMessage.Subject = contactVM.Appeal.Email;
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = htmlTable;

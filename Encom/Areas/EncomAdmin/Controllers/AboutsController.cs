@@ -50,11 +50,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(models);
-            //}
-
             #region Image
             bool fileErrorAdded = false;
             foreach (var item in models)
@@ -91,7 +86,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 ModelState.AddModelError("[0].Files", $"File must be less than 20 mb");
                                 fileErrorAdded = true;
                             }
-                            //return View(models);
                         }
 
                         AboutFile aboutFile = new()
@@ -111,7 +105,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                         ModelState.AddModelError("[0].Files", "Image is empty");
                         fileErrorAdded = true;
                     }
-                    //return View(models);
                 }
                 await _db.Abouts.AddAsync(item);
             }
@@ -173,8 +166,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            //if (!ModelState.IsValid) return View(abouts);
-
             if (id == null) return BadRequest();
 
             About? firstAbout = await _db.Abouts
@@ -230,7 +221,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                         ModelState.AddModelError("[0].Files", $"File must be less than 20 mb");
                                         fileErrorAdded = true;
                                     }
-                                    //return View(abouts);
                                 }
                             }
                             else
@@ -240,7 +230,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                     ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
                                     fileErrorAdded = true;
                                 }
-                                //return View(abouts);
                             }
                         }
                     }
@@ -287,7 +276,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
         }
 
         #region Order Number

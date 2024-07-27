@@ -51,11 +51,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
 
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(models);
-            //}
-
             #region Image
             bool fileErrorAdded = false;
             foreach (var item in models)
@@ -82,7 +77,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
                                 fileErrorAdded = true;
                             }
-                            //return View(models);
                         }
 
                         if (file.CheckFileLength(5120))
@@ -92,7 +86,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                 ModelState.AddModelError("[0].Files", $"Photo must be less than 5 mb");
                                 fileErrorAdded = true;
                             }
-                            //return View(models);
                         }
 
                         NewsPhoto newsImage = new()
@@ -112,7 +105,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                         ModelState.AddModelError("[0].Files", "Image is empty");
                         fileErrorAdded = true;
                     }
-                    //return View(models);
                 }
 
                 await _db.News.AddAsync(item);
@@ -146,7 +138,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
         }
         #endregion
 
@@ -175,8 +166,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
         public async Task<IActionResult> Update(int? id, List<News> news)
         {
             ViewBag.Languages = await _db.Languages.ToListAsync();
-
-            //if (!ModelState.IsValid) return View(news);
 
             if (id == null) return BadRequest();
 
@@ -230,7 +219,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                         ModelState.AddModelError("[0].Files", $"Photo must be less than 5 mb");
                                         fileErrorAdded = true;
                                     }
-                                    //return View(news);
                                 }
                             }
                             else
@@ -240,7 +228,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
                                     ModelState.AddModelError("[0].Files", $"{file.FileName} is not the correct format");
                                     fileErrorAdded = true;
                                 }
-                                //return View(news);
                             }
                         }
                     }
@@ -287,7 +274,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
         }
 
         #region Order Number
@@ -433,7 +419,6 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _db.SaveChangesAsync();
             return Json(new { success = true });
-            //return RedirectToAction(nameof(Index));
 
         }
         #endregion

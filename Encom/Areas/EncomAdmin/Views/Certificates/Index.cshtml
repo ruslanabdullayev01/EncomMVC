@@ -79,66 +79,6 @@
     </div>
 </div>
 
-@* @section Scripts {
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <style>
-        .swal-title {
-            color: black;
-        }
-
-        .swal-text {
-            color: #555;
-        }
-    </style>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on('click', '.deleteIndex', function (e) {
-                e.preventDefault();
-                var deleteUrl = $(this).attr('href');
-
-                swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this data!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            $.ajax({
-                                url: deleteUrl,
-                                type: 'DELETE',
-                                success: function (result) {
-                                    swal({
-                                        icon: "success",
-                                        text: "Your data has been deleted!",
-                                        buttons: false,
-                                    })
-                                    setTimeout(() => {
-                                        location.reload();
-                                    }, 1000)
-                                },
-                                error: function (error) {
-                                    console.error('Error:', error);
-                                }
-                            });
-                        } else {
-                            swal({
-                                icon: "error",
-                                text: "Delete operation cancelled!",
-                                buttons: false,
-                                timer: 1000
-                            });
-                        }
-                    });
-            });
-        });
-    </script>
-
-}
- *@
-
 @section Scripts {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>

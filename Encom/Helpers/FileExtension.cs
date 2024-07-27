@@ -14,7 +14,7 @@
 
         public static async Task<string> CreateFileAsync(this IFormFile file, IWebHostEnvironment env, params string[] folders)
         {
-            int lastIndex = file.FileName.LastIndexOf(".");
+            int lastIndex = file.FileName.LastIndexOf('.');
 
             string name = file.FileName.Substring(lastIndex);
 

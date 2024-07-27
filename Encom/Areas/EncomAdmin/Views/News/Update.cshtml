@@ -67,7 +67,7 @@
         $(document).on('click', '.deleteImage', function (e) {
             e.preventDefault();
 
-            let button = $(this); // Сохраняем ссылку на кнопку
+            let button = $(this);
             let newsId = button.data('newsid');
             let imagePath = button.data('imagepath');
             let url = `/EncomAdmin/News/DeleteImage?id=${newsId}&imagePath=${encodeURIComponent(imagePath)}`;

@@ -20,12 +20,16 @@ namespace Encom.Areas.EncomAdmin.Controllers
             _userManager = userManager;
 
         }
+
+        #region Index
         public IActionResult Index(int pageIndex = 1)
         {
             IQueryable<User> query = _db.Users.AsNoTracking();
             return View(PageNatedList<User>.Create(query, pageIndex, 10, 10));
         }
+        #endregion
 
+        #region Delete
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -33,7 +37,7 @@ namespace Encom.Areas.EncomAdmin.Controllers
 
             await _userManager.DeleteAsync(user);
             return Json(new { success = true });
-            //return RedirectToAction("Index", "Users");
         }
+        #endregion
     }
 }
